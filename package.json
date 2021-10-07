@@ -1,0 +1,23 @@
+{
+  "name": "dreamer",
+  "version": "1.0.0",
+  "description": "UI Interface built with Electron to use DeepDaze and VQGAN-CLIP",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eros404/Dreamer.git"
+  },
+  "author": "Eros404",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/eros404/Dreamer/issues"
+  },
+  "homepage": "https://github.com/eros404/Dreamer#readme",
+  "devDependencies": {
+    "electron": "^15.1.1",
+    "jquery": "^3.6.0"
+  }
+}
