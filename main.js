@@ -1,11 +1,11 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, ipcMain, dialog, BrowserWindow } = require('electron')
 const child_process = require('child_process')
-const dialog = app.dialog
 const path = require('path')
 
+let mainWindow;
 function createWindow () {
   // Créer la fenêtre de navigation.
-  const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -45,10 +45,11 @@ if (process.platform !== 'darwin') app.quit()
 // This function will output the lines from the script 
 // and will return the full combined output
 // as well as exit code when it's done (using the callback).
-ipcMain.on("exec-command", (event, args) => {
+ipcMain.on("exec-deepdaze", (event, args) => {
     var child = child_process.spawn(args.cmdName, args.cmdArgs, {
         encoding: 'utf8',
-        shell: false
+        shell: false,
+        cwd: path.join(__dirname, 'user_images', 'deepdaze')
     });
     // You can also use a variable to save the output for when the script closes later
     child.on('error', (error) => {
@@ -63,15 +64,15 @@ ipcMain.on("exec-command", (event, args) => {
     child.stdout.on('data', (data) => {
         //Here is the output
         data=data.toString();
-        console.log(data);      
+        console.log("stdout: " + data);      
     });
 
     child.stderr.setEncoding('utf8');
     child.stderr.on('data', (data) => {
         // Return some data to the renderer process with the mainprocess-response ID
-        mainWindow.webContents.send('mainprocess-response', data);
+        mainWindow.webContents.send('deepdaze-response', data);
         //Here is the output from the command
-        console.log(data);  
+        console.log("stderr: " + data);  
     });
 
     child.on('close', (code) => {
