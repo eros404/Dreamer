@@ -3,7 +3,7 @@ const child_process = require('child_process')
 const path = require('path')
 const fs = require('fs')
 
-const scenarios = require("./scripts/scenarios_exports.js")
+const scenarios = require("./node_scripts/scenarios_exports.js")
 
 let mainWindow;
 function createWindow () {
@@ -15,7 +15,7 @@ function createWindow () {
         nodeIntegration: false, // is default value after Electron v5
         contextIsolation: true, // protect against prototype pollution
         enableRemoteModule: false, // turn off remote
-        preload: path.join(__dirname, 'scripts', 'preload.js')
+        preload: path.join(__dirname, 'node_scripts', 'preload.js')
     }
   })
 
@@ -47,9 +47,7 @@ app.on('window-all-closed', function () {
     }
 })
 
-// This function will output the lines from the script 
-// and will return the full combined output
-// as well as exit code when it's done (using the callback).
+
 ipcMain.on("exec-deepdaze", (event, args) => {
     let directoryName = new Date().toISOString().replace(/T/, '_').replaceAll(":", '-').replace(/\..+/, '')
     let directoryPath = path.join(__dirname, 'user_images', 'deepdaze', directoryName)
@@ -71,16 +69,15 @@ ipcMain.on("exec-deepdaze", (event, args) => {
     child.stdout.setEncoding('utf8');
     child.stdout.on('data', (data) => {
         //Here is the output
-        data=data.toString();
-        console.log("stdout: " + data)
+        data=data.toString()
+        mainWindow.webContents.send('deepdaze-response', data)
     })
 
     child.stderr.setEncoding('utf8');
     child.stderr.on('data', (data) => {
+        data=data.toString()
         // Return some data to the renderer process with the mainprocess-response ID
         mainWindow.webContents.send('deepdaze-response', data)
-        //Here is the output from the command
-        console.log("stderr: " + data);  
     });
 
     child.on('close', (code) => {
@@ -88,10 +85,18 @@ ipcMain.on("exec-deepdaze", (event, args) => {
         mainWindow.webContents.send('deepdaze-close', code)
     });
 
-    if (typeof args.cmdCallback === 'function'){
-        callback()
-    }
     ipcMain.on("cancel-deepdaze", (event, args) => {
         child.kill()
+    })
+})
+
+ipcMain.on("file-dialog", (event, args) => {
+    dialog.showOpenDialog(mainWindow, {
+        filters: [{ name : 'Images', extensions: ['jpg', 'png'] }],
+        properties: ["openFile"]
+    }).then(result => {
+        if (!result.canceled) {
+            mainWindow.webContents.send("file-dialog-response", result.filePaths[0])
+        }
     })
 })

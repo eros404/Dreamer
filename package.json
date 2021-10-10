@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/eros404/Dreamer#readme",
   "devDependencies": {
-    "electron": "^15.1.1",
-    "jquery": "^3.6.0"
+    "electron": "^15.1.1"
   }
 }

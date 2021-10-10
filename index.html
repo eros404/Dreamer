@@ -15,6 +15,11 @@
         <input id="dd-input-text" name="dd-input-text" type="text" placeholder="A Panda bicking in space" required maxlength="77" />
       </div>
       <div>
+        <label for="dd-input-image">Image</label>
+        <button id="dd-input-image" name="dd-input-image" type="button">Choose...</button><button id="dd-image-cancel" disabled>Cancel</button>
+        <div id="dd-image-path"></div>
+      </div>
+      <div>
         <label for="dd-input-epochs">Epochs</label>
         <input id="dd-input-epochs" name="dd-input-epochs" type="number" value="10" min="1" max="100" />
       </div>
@@ -36,15 +41,15 @@
       </div>
       <div>
         <label for="dd-input-open_forder">Open folder</label>
-        <input id="dd-input-open_forder" name="dd-input-open_forder" type="checkbox" />
+        <input id="dd-input-open_forder" name="dd-input-open_forder" type="checkbox" checked />
       </div>
       <div>
         <label for="dd-input-save_GIF">Save GIF</label>
         <input id="dd-input-save_GIF" name="dd-input-save_GIF" type="checkbox" />
       </div>
       <input id="dd-submit" type="submit" value="Start dreaming" />    
-      <button id="cancel-deepdaze" disabled>Cancel</button>
     </form>
+    <button id="cancel-deepdaze" disabled>Cancel</button>
     <div id="console"></div>
   </body>
   <script src="./contents/jquery-3.6.0.min.js"></script>
