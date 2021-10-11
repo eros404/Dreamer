@@ -9,8 +9,8 @@ let mainWindow;
 function createWindow () {
   // Créer la fenêtre de navigation.
     mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 1000,
     webPreferences: {
         nodeIntegration: false, // is default value after Electron v5
         contextIsolation: true, // protect against prototype pollution

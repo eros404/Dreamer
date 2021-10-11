@@ -5,52 +5,69 @@
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/styles.css">
     <title>Dreamer</title>
   </head>
-  <body>
-    <h1>Dreamer</h1>
-    <form id="dd-form">
-      <div>
-        <label for="dd-input-text">Text</label>
-        <input id="dd-input-text" name="dd-input-text" type="text" placeholder="A Panda bicking in space" required maxlength="77" />
-      </div>
-      <div>
-        <label for="dd-input-image">Image</label>
-        <button id="dd-input-image" name="dd-input-image" type="button">Choose...</button><button id="dd-image-cancel" disabled>Cancel</button>
-        <div id="dd-image-path"></div>
-      </div>
-      <div>
-        <label for="dd-input-epochs">Epochs</label>
-        <input id="dd-input-epochs" name="dd-input-epochs" type="number" value="10" min="1" max="100" />
-      </div>
-      <div>
-        <label for="dd-input-iterations">Iterations</label>
-        <input id="dd-input-iterations" name="dd-input-iterations" type="number" value="1050" min="50" max="2100" />
-      </div>
-      <div>
-        <label for="dd-input-save_every">Save every</label>
-        <input id="dd-input-save_every" name="dd-input-save_every" type="number" value="100" min="1" max="2100" />
-      </div>
-      <div>
-        <label for="dd-input-image_width">Image width</label>
-        <input id="dd-input-image_width" name="dd-input-image_width" type="number" value="512" min="16" max="1096" step="16" />
-      </div>
-      <div>
-        <label for="dd-input-deeper">Deeper</label>
-        <input id="dd-input-deeper" name="dd-input-deeper" type="checkbox" />
-      </div>
-      <div>
-        <label for="dd-input-open_forder">Open folder</label>
-        <input id="dd-input-open_forder" name="dd-input-open_forder" type="checkbox" checked />
-      </div>
-      <div>
-        <label for="dd-input-save_GIF">Save GIF</label>
-        <input id="dd-input-save_GIF" name="dd-input-save_GIF" type="checkbox" />
-      </div>
-      <input id="dd-submit" type="submit" value="Start dreaming" />    
-    </form>
-    <button id="cancel-deepdaze" disabled>Cancel</button>
-    <div id="console"></div>
+  <body class="text-navy scroll-smooth">
+    <main class="p-4 my-0 mx-auto max-w-3xl">
+      <h1>Deepdaze</h1>
+      <form id="dd-form">
+        <div class="flex">
+          <div class="field mr-3">
+            <p><label for="dd-input-text">Text</label></p>
+            <input id="dd-input-text" name="dd-input-text" type="text" placeholder="A Panda bicking in space" required maxlength="77" />
+          </div>
+          <div class="field">
+            <p><label for="dd-input-image">Image</label></p>
+            <div>
+              <button id="dd-input-image" name="dd-input-image" type="button">Choose...</button>
+              <button id="dd-image-cancel" type="button" class="btn-cancel">&#10008;</button>
+              <span id="dd-image-path"></span>
+            </div>
+          </div>
+        </div>
+        <div class="flex">
+          <div class="field mr-3">
+            <p><label for="dd-input-epochs">Epochs</label></p>
+            <input id="dd-input-epochs" name="dd-input-epochs" type="number" value="10" min="1" max="100" />
+          </div>
+          <div class="field">
+            <p><label for="dd-input-iterations">Iterations</label></p>
+            <input id="dd-input-iterations" name="dd-input-iterations" type="number" value="1050" min="50" max="2100" />
+          </div>
+        </div>
+        <div class="field">
+          <p><label for="dd-input-save_every">Save every</label></p>
+          <input id="dd-input-save_every" name="dd-input-save_every" type="number" value="100" min="1" max="2100" />
+        </div>
+        <div class="field">
+          <p><label for="dd-input-image_width">Image width</label></p>
+          <input id="dd-input-image_width" name="dd-input-image_width" type="number" value="512" min="16" max="1096" step="16" />
+        </div>
+        <div class="field">
+          <p>
+            <input id="dd-input-deeper" name="dd-input-deeper" type="checkbox" />
+            <label for="dd-input-deeper">Deeper</label>
+          </p>
+        </div>
+        <div class="field">
+          <p>
+            <input id="dd-input-open_forder" name="dd-input-open_forder" type="checkbox" checked />
+            <label for="dd-input-open_forder">Open folder</label>
+          </p>
+        </div>
+        <div class="field">
+          <p>
+            <input id="dd-input-save_GIF" name="dd-input-save_GIF" type="checkbox" />
+            <label for="dd-input-save_GIF">Save GIF</label>
+          </p>
+        </div>
+        <input id="dd-submit" type="submit" value="Dream &#128640;" />
+        <button id="cancel-deepdaze" type="button" class="btn-cancel">Cancel</button>  
+      </form>
+      <div id="console"></div>
+    </main>
   </body>
   <script src="./contents/jquery-3.6.0.min.js"></script>
   <script src="./scripts/scenarios.js"></script>

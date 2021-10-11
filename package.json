@@ -4,6 +4,8 @@
   "description": "UI Interface built with Electron to use DeepDaze and VQGAN-CLIP",
   "main": "main.js",
   "scripts": {
+    "tailwind:watch": "npx tailwindcss -i ./_tailwind/styles.css -o ./css/styles.css --watch",
+    "tailwind": "npx tailwindcss -i ./_tailwind/styles.css -o ./css/styles.css",
     "start": "electron ."
   },
   "repository": {
@@ -17,6 +19,10 @@
   },
   "homepage": "https://github.com/eros404/Dreamer#readme",
   "devDependencies": {
-    "electron": "^15.1.1"
+    "autoprefixer": "^10.3.7",
+    "concurrently": "^6.3.0",
+    "electron": "^15.1.1",
+    "postcss": "^8.3.9",
+    "tailwindcss": "^2.2.16"
   }
 }

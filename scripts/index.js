@@ -1,15 +1,15 @@
 window.addEventListener('DOMContentLoaded', () => {
-
+    $(".btn-cancel").hide()
     $("#dd-input-image").on("click", () => {
         window.api.send("file-dialog")
     })
     window.api.receive("file-dialog-response", (filePath) => {
         $("#dd-image-path").text(filePath)
-        $("#dd-image-cancel").prop("disabled", false)
+        $("#dd-image-cancel").show()
     })
     $("#dd-image-cancel").on("click", () => {
         $("#dd-image-path").text("")
-        $("#dd-image-cancel").prop("disabled", true)
+        $("#dd-image-cancel").hide()
     })
 
 
@@ -28,8 +28,8 @@ window.addEventListener('DOMContentLoaded', () => {
             $("#dd-input-save_GIF").is(":checked"),
         )
         window.api.send("exec-deepdaze", scenario)
-        $('#cancel-deepdaze').prop("disabled", false)
-        $('#dd-submit').prop("disabled", true)
+        $('#cancel-deepdaze').show()
+        $('#dd-submit').hide()
     })
     $("#cancel-deepdaze").on("click", () => {
         window.api.send("cancel-deepdaze")
@@ -38,8 +38,8 @@ window.addEventListener('DOMContentLoaded', () => {
         $("#console").text(data)
     })
     window.api.receive("deepdaze-close", (code) => {
-        $('#cancel-deepdaze').prop("disabled", true)
-        $('#dd-submit').prop("disabled", false)
+        $('#cancel-deepdaze').hide()
+        $('#dd-submit').show()
         $("#console").text("Process finished with the exit code: " + code)
     })
 })
