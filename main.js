@@ -20,7 +20,7 @@ function createWindow () {
   })
 
   // et charger l'index.html de l'application.
-  mainWindow.loadFile('index.html')
+  mainWindow.loadFile('deepdaze.html')
   // Ouvrir les outils de développement.
   mainWindow.webContents.openDevTools()
 }
@@ -75,7 +75,6 @@ ipcMain.on("exec-deepdaze", (event, args) => {
 
     child.stderr.setEncoding('utf8');
     child.stderr.on('data', (data) => {
-        data=data.toString()
         // Return some data to the renderer process with the mainprocess-response ID
         mainWindow.webContents.send('deepdaze-response', data)
     });

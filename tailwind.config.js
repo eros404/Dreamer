@@ -15,8 +15,23 @@ module.exports = {
       'green': '#2A9D8F',
       'darkgreen': '#1E6E64',
       'navy': '#17050F',
-      'gold': '#f3a712'
+      'gold': '#f3a712',
+      'blue': '#004FFF'
     },
+    fontFamily: {
+      'open': ['"Open Sans"', '"Clear Sans"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+      'mono': ['ui-monospace', 'SFMono-Regular', 'Consolas']
+    },
+    minHeight: {
+      '0': '0',
+      '1/4': '25%',
+      '1/2': '50%',
+      '3/4': '75%',
+      'full': '100%',
+      '1': '1rem',
+      '1.75': '1.75rem',
+      '2': '2rem'
+     },
     extend: {
       fontSize: {
         h1: ['2.25em', '1.2'],

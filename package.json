@@ -6,7 +6,8 @@
   "scripts": {
     "tailwind:watch": "npx tailwindcss -i ./_tailwind/styles.css -o ./css/styles.css --watch",
     "tailwind": "npx tailwindcss -i ./_tailwind/styles.css -o ./css/styles.css",
-    "start": "electron ."
+    "start": "electron .",
+    "dev": "electron . --trace-warnings"
   },
   "repository": {
     "type": "git",

@@ -10,7 +10,7 @@
     <title>Dreamer</title>
   </head>
   <body class="text-navy scroll-smooth">
-    <main class="p-4 my-0 mx-auto max-w-3xl">
+    <main class="p-4 my-0 mx-auto max-w-3xl font-open">
       <header>
       </header>
       <h1>Deepdaze</h1>
@@ -36,12 +36,12 @@
           </div>
           <div class="field">
             <p><label for="dd-input-iterations">Iterations</label></p>
-            <input id="dd-input-iterations" name="dd-input-iterations" type="number" value="1050" min="50" max="2100" />
+            <input id="dd-input-iterations" name="dd-input-iterations" type="number" value="1050" min="50" max="2100" step="50" />
           </div>
         </div>
         <div class="field">
           <p><label for="dd-input-save_every">Save every</label></p>
-          <input id="dd-input-save_every" name="dd-input-save_every" type="number" value="100" min="1" max="2100" />
+          <input id="dd-input-save_every" name="dd-input-save_every" type="number" value="100" min="10" max="2100" step="10" />
         </div>
         <div class="field">
           <p><label for="dd-input-image_width">Image width</label></p>
@@ -68,7 +68,21 @@
         <input id="dd-submit" type="submit" value="Dream &#128640;" />
         <button id="cancel-deepdaze" type="button" class="btn-cancel">Cancel</button>  
       </form>
-      <div id="console"></div>
+      <p id="console" class="bg-gray-800 text-white min-h-1.75 w-full rounded-md shadow px-2 py-1 font-mono"></p>
+      <div id="process-data">
+        <div class="flex w-full font-mono">
+          <p class="text-center flex-initial mx-2">
+            loss: <span id="process-loss"></span>
+          </p>
+          <div id="data-progress" class="w-40 flex-auto mx-2 h-4 border shadow mt-4">
+            <div id="data-progress-bar" class="h-full bg-green"></div>
+          </div>
+          <p class="text-left flex-auto mx-2">
+            <span id="process-current-epoch"></span>/<span id="process-total-epochs"></span> epochs
+          </p>
+          <p id="process-it-second" class="text-right flex-auto mx-2"></p>
+        </div>
+      </div>
     </main>
   </body>
   <script src="./contents/jquery-3.6.0.min.js"></script>
