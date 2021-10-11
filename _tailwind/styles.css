@@ -66,13 +66,13 @@
     }
 
     input {
-        @apply px-2 py-1 rounded-md border border-gray-300;
+        @apply px-2 py-1 rounded-md border border-gray-300 shadow;
     }
     input[type="checkbox"] {
         @apply w-4 h-4;
     }
     input[type="submit"] {
-        @apply bg-green text-white cursor-pointer font-bold bg-gradient-to-t from-darkgreen to-green shadow;
+        @apply bg-green text-white cursor-pointer font-bold bg-gradient-to-t from-darkgreen to-green;
     }
     label {
         @apply font-bold;
