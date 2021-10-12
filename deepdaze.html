@@ -14,18 +14,20 @@
       <h1>Deepdaze</h1>
       <p>Deepdaze is a simple command line tool for text to image generation using OpenAI's <a target="_blank" href="https://github.com/openai/CLIP">CLIP</a> and <a target="_blank" href="https://arxiv.org/abs/2006.09661">Siren</a>.</p>
       <p>It is created by Phil Wang (<a target="_blank" href="https://github.com/lucidrains">@lucidrains</a>), you can found the source repository <a target="_blank" href="https://github.com/lucidrains/deep-daze">here</a>.</p>
-      <div>
-        <h2>Requirements</h2>
-        <p>This will require that you have an <strong>Nvidia GPU or AMD GPU</strong></p>
-        <ol>
-          <li>Recommended: 16GB VRAM</li>
-          <li>Minimum Requirements: 4GB VRAM (using VERY LOW settings)</li>
-        </ol>
-        <p class="font-bold"><a target="_blank" href="https://www.python.org/downloads/">Python</a> must be installed</p>
+      <h2>Requirements</h2>
+      <p>This will require that you have an <strong>Nvidia GPU or AMD GPU</strong></p>
+      <ul>
+        <li>Recommended: 16GB VRAM</li>
+        <li>Minimum Requirements: 4GB VRAM (using VERY LOW settings)</li>
+      </ul>
+      <div id="dd-install" class="bg-gradient-to-t from-gray-200 to-gray-100 px-3 rounded-md shadow">
         <h2>Installation</h2>
+        <p class="font-bold"><a target="_blank" href="https://www.python.org/downloads/">Python</a> must be installed</p>
+        <button id="install-deepdaze" class="btn-primary my-2">Install Deepdaze &#128295;</button>
       </p>
       </div>
-      <form id="dd-form">
+      <hr>
+      <form id="dd-form" class="bg-gradient-to-t from-gray-200 to-gray-100 p-3 rounded-md shadow">
         <div class="sm:flex">
           <div class="field mr-3 flex-initial">
             <p><label for="dd-input-text">Text</label></p>
@@ -40,7 +42,7 @@
               </div>
             </div>
             <div class="justify-end flex flex-auto">
-              <img id="dd-selected-image" src="" class="h-20 shadow" />
+              <img id="dd-selected-image" src="" class="h-20 shadow rounded-md" />
             </div>
           </div>
         </div>
@@ -80,8 +82,10 @@
             <label for="dd-input-save_GIF">Save GIF</label>
           </p>
         </div>
-        <input id="dd-submit" type="submit" value="Dream &#128640;" />
-        <button id="cancel-deepdaze" type="button" class="btn-cancel">Cancel</button>  
+        <div class="field text-center">
+          <input id="dd-submit" type="submit" class="btn-primary w-2/3" value="Dream &#128640;" />
+          <button id="cancel-deepdaze" type="button" class="btn-cancel w-2/3">Cancel</button>
+        </div> 
       </form>
       <p id="console" class="bg-gray-800 text-white min-h-1.75 w-full rounded-md shadow px-2 py-1 font-mono"></p>
       <div id="process-data">
@@ -90,7 +94,7 @@
             loss: <span id="process-loss"></span>
           </p>
           <div id="data-progress" class="w-40 flex-auto mx-2 h-4 border shadow mt-4">
-            <div id="data-progress-bar" class="h-full bg-green"></div>
+            <div id="data-progress-bar" class="h-full bg-green bg-gradient-to-r from-darkgreen to-green"></div>
           </div>
           <p class="text-left flex-auto mx-2">
             <span id="process-current-epoch"></span>/<span id="process-total-epochs"></span> epochs

@@ -65,8 +65,8 @@
         @apply text-h6 text-gray-700 dark:text-gray-100;
     }
 
-    form {
-        @apply mb-1;
+    p, form {
+        @apply mt-4 mb-1;
     }
     input {
         @apply px-2 py-1 rounded-md border border-gray-300 shadow;
@@ -75,17 +75,10 @@
         @apply w-4 h-4;
     }
     input[type="submit"] {
-        @apply bg-green text-white cursor-pointer font-bold bg-gradient-to-t from-darkgreen to-green;
+        @apply cursor-pointer;
     }
     label {
         @apply font-bold;
-    }
-
-    p, pre, code, li {
-        @apply leading-6 max-w-full;
-    }
-    p, blockquote, ul, ol, dl, table {
-        @apply mt-3 mb-1;
     }
 
     button {
@@ -96,26 +89,17 @@
         @apply text-blue underline;
     }
 
-    ol, ul {
-        @apply pl-4;
+    ul, ol {
+        @apply my-4 mx-0 pl-10;
     }
-    ol {
-        @apply list-decimal;
-    }
-    li > ol, li > ul {
-        @apply m-0;
+    ul {
+        list-style-type: disc;
     }
 
     hr {
         @apply h-0.5 p-0 my-4 mx-0 bg-gray-300 border-0 overflow-hidden box-content;
     }
 
-    blockquote {
-        @apply border-l-4 border-gray-400 text-gray-400 py-0 px-4;
-    }
-    blockquote blockquote {
-        @apply pr-0;
-    }
 
     table {
         @apply p-0 my-4 border-collapse;
@@ -159,6 +143,9 @@
     }
     .btn-cancel {
         @apply bg-red text-white bg-gradient-to-t from-red to-lightred;
+    }
+    .btn-primary {
+        @apply bg-green text-white cursor-pointer font-bold bg-gradient-to-t from-darkgreen to-green;
     }
 }
 

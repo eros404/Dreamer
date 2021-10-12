@@ -711,7 +711,8 @@ h6 {
   color: rgba(245, 245, 245, var(--tw-text-opacity));
 }
 
-form {
+p, form {
+  margin-top: 1rem;
   margin-bottom: 0.25rem;
 }
 
@@ -735,29 +736,10 @@ input[type="checkbox"] {
 
 input[type="submit"] {
   cursor: pointer;
-  --tw-bg-opacity: 1;
-  background-color: rgba(42, 157, 143, var(--tw-bg-opacity));
-  background-image: linear-gradient(to top, var(--tw-gradient-stops));
-  --tw-gradient-from: #1E6E64;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(30, 110, 100, 0));
-  --tw-gradient-to: #2A9D8F;
-  font-weight: 700;
-  --tw-text-opacity: 1;
-  color: rgba(255, 255, 255, var(--tw-text-opacity));
 }
 
 label {
   font-weight: 700;
-}
-
-p, pre, code, li {
-  max-width: 100%;
-  line-height: 1.5rem;
-}
-
-p, blockquote, ul, ol, dl, table {
-  margin-top: 0.75rem;
-  margin-bottom: 0.25rem;
 }
 
 button {
@@ -785,16 +767,16 @@ a[href] {
   text-decoration: underline;
 }
 
-ol, ul {
-  padding-left: 1rem;
+ul, ol {
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding-left: 2.5rem;
 }
 
-ol {
-  list-style-type: decimal;
-}
-
-li > ol, li > ul {
-  margin: 0px;
+ul {
+  list-style-type: disc;
 }
 
 hr {
@@ -809,22 +791,6 @@ hr {
   --tw-bg-opacity: 1;
   background-color: rgba(212, 212, 212, var(--tw-bg-opacity));
   padding: 0px;
-}
-
-blockquote {
-  border-left-width: 4px;
-  --tw-border-opacity: 1;
-  border-color: rgba(163, 163, 163, var(--tw-border-opacity));
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  --tw-text-opacity: 1;
-  color: rgba(163, 163, 163, var(--tw-text-opacity));
-}
-
-blockquote blockquote {
-  padding-right: 0px;
 }
 
 table {
@@ -956,6 +922,19 @@ figcaption {
   --tw-gradient-from: #B30000;
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(179, 0, 0, 0));
   --tw-gradient-to: #E60000;
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+
+.btn-primary {
+  cursor: pointer;
+  --tw-bg-opacity: 1;
+  background-color: rgba(42, 157, 143, var(--tw-bg-opacity));
+  background-image: linear-gradient(to top, var(--tw-gradient-stops));
+  --tw-gradient-from: #1E6E64;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(30, 110, 100, 0));
+  --tw-gradient-to: #2A9D8F;
+  font-weight: 700;
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity));
 }

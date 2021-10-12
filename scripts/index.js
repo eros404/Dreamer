@@ -7,15 +7,28 @@ window.api.receive("file-dialog-response", (filePath) => {
     $("#dd-selected-image").show()
     $("#dd-image-cancel").show()
 })
-window.api.receive("deepdaze-response", (data) => {
+window.api.receive("process-response", (data) => {
     showProcessData(data)
 })
 window.api.receive("deepdaze-close", (code) => {
     $('#cancel-deepdaze').hide()
     $('#dd-submit').show()
+    $("#process-data").hide()
     $("#console").text("Process finished")
     lastIt = 1000
     currentEpoch = -1
+})
+window.api.receive("deepdaze-installed-response", (code) => {
+    if (code == 0) {
+        $("#dd-install").hide()
+        $("#dd-form").show()
+    } else {
+        $("#dd-install").show()
+        $("#dd-form").hide()
+    }
+})
+window.api.receive("install-deepdaze-close", (code) => {
+    window.api.send("ask-deepdaze-installed")
 })
 
 function showProcessData(data) {
@@ -41,6 +54,7 @@ function showProcessData(data) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+    window.api.send("ask-deepdaze-installed")
     $(".btn-cancel").hide()
     $("#process-data").hide()
     $("#dd-selected-image").hide()
@@ -72,5 +86,8 @@ window.addEventListener('DOMContentLoaded', () => {
     })
     $("#cancel-deepdaze").on("click", () => {
         window.api.send("cancel-deepdaze")
+    })
+    $("#install-deepdaze").on("click", () => {
+        window.api.send("install-deepdaze")
     })
 })

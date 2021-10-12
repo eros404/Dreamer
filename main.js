@@ -1,9 +1,8 @@
 const { app, ipcMain, dialog, BrowserWindow } = require('electron')
-const child_process = require('child_process')
 const path = require('path')
 const fs = require('fs')
 
-const scenarios = require("./node_scripts/scenarios_exports.js")
+const deepdaze = require("./node_scripts/deepdaze.js")
 
 let mainWindow;
 function createWindow () {
@@ -11,6 +10,7 @@ function createWindow () {
     mainWindow = new BrowserWindow({
     width: 1000,
     height: 1000,
+    icon: path.join(__dirname, 'images', 'icon.png'),
     webPreferences: {
         nodeIntegration: false, // is default value after Electron v5
         contextIsolation: true, // protect against prototype pollution
@@ -20,7 +20,7 @@ function createWindow () {
   })
 
   // et charger l'index.html de l'application.
-  mainWindow.loadFile('deepdaze.html')
+  mainWindow.loadFile(path.join(__dirname, 'deepdaze.html'))
   // Ouvrir les outils de développement.
   mainWindow.webContents.openDevTools()
 }
@@ -47,45 +47,58 @@ app.on('window-all-closed', function () {
     }
 })
 
+function sendProcessResponse(data) {
+    mainWindow.webContents.send('process-response', data)
+}
 
 ipcMain.on("exec-deepdaze", (event, args) => {
-    let directoryName = new Date().toISOString().replace(/T/, '_').replaceAll(":", '-').replace(/\..+/, '')
-    let directoryPath = path.join(__dirname, 'user_images', 'deepdaze', directoryName)
-    fs.mkdir(directoryPath, (err) => {})
-    var child = child_process.spawn("imagine", scenarios.getDeepdazeArguments(args), {
-        encoding: 'utf8',
-        shell: false,
-        cwd: directoryPath
-    });
-    // You can also use a variable to save the output for when the script closes later
+    var child = deepdaze.spawnDeepdaze(args, __dirname)
+
     child.on('error', (error) => {
         dialog.showMessageBox({
             title: 'Error',
             type: 'warning',
             message: 'Error occured.\r\n' + error
-        });
-    });
-
-    child.stdout.setEncoding('utf8');
-    child.stdout.on('data', (data) => {
-        //Here is the output
-        data=data.toString()
-        mainWindow.webContents.send('deepdaze-response', data)
+        })
     })
 
-    child.stderr.setEncoding('utf8');
-    child.stderr.on('data', (data) => {
-        // Return some data to the renderer process with the mainprocess-response ID
-        mainWindow.webContents.send('deepdaze-response', data)
-    });
+    child.stdout.setEncoding('utf8');
+    child.stdout.on('data', (data) => sendProcessResponse(data.toString()))
 
-    child.on('close', (code) => {
-        //Here you can get the exit code of the script  
+    child.stderr.setEncoding('utf8');
+    child.stderr.on('data', (data) => sendProcessResponse(data))
+
+    child.on('close', (code) => {  
         mainWindow.webContents.send('deepdaze-close', code)
-    });
+    })
 
     ipcMain.on("cancel-deepdaze", (event, args) => {
         child.kill()
+    })
+})
+
+ipcMain.on("ask-deepdaze-installed", (event, args) => {
+    var child = deepdaze.spawnDeepdazeInstalled()
+    child.on('error', (error) => {})
+    child.on('close', (code) => {  
+        mainWindow.webContents.send("deepdaze-installed-response", code)
+    })
+})
+ipcMain.on("install-deepdaze", (event, args) => {
+    var child = deepdaze.spawnInstallDeepdaze()
+    child.on('error', (error) => {
+        dialog.showMessageBox({
+            title: 'Error',
+            type: 'warning',
+            message: 'Error occured.\r\n' + error
+        })
+    })
+    child.stdout.setEncoding('utf8');
+    child.stdout.on('data', (data) => sendProcessResponse(data.toString()))
+    child.stderr.setEncoding('utf8');
+    child.stderr.on('data', (data) => sendProcessResponse(data))
+    child.on('close', (code) => {  
+        mainWindow.webContents.send('install-deepdaze-close', code)
     })
 })
 
