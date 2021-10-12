@@ -13,6 +13,8 @@ window.api.receive("deepdaze-close", (code) => {
     $('#cancel-deepdaze').hide()
     $('#dd-submit').show()
     $("#console").text("Process finished")
+    lastIt = 1000
+    currentEpoch = -1
 })
 
 function showProcessData(data) {
