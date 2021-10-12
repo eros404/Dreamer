@@ -9,23 +9,27 @@
     <link rel="stylesheet" href="./css/styles.css">
     <title>Dreamer</title>
   </head>
-  <body class="text-navy scroll-smooth">
-    <main class="p-4 my-0 mx-auto max-w-3xl font-open">
+  <body class="text-navy scroll-smooth font-open">
+    <main class="p-4 my-0 mx-auto max-w-3xl">
       <header>
       </header>
       <h1>Deepdaze</h1>
       <form id="dd-form">
-        <div class="flex">
-          <div class="field mr-3">
+        <div class="sm:flex">
+          <div class="field mr-3 flex-initial">
             <p><label for="dd-input-text">Text</label></p>
             <input id="dd-input-text" name="dd-input-text" type="text" placeholder="A Panda bicking in space" required maxlength="77" />
           </div>
-          <div class="field">
-            <p><label for="dd-input-image">Image</label></p>
-            <div>
-              <button id="dd-input-image" name="dd-input-image" type="button">Choose...</button>
-              <button id="dd-image-cancel" type="button" class="btn-cancel">&#10008;</button>
-              <span id="dd-image-path"></span>
+          <div class="flex-auto flex">
+            <div class="field flex-initial">
+              <p><label for="dd-input-image">Image</label></p>
+              <div>
+                <button id="dd-input-image" name="dd-input-image" type="button">Choose...</button>
+                <button id="dd-image-cancel" type="button" class="btn-cancel">&#10008;</button>
+              </div>
+            </div>
+            <div class="justify-end flex flex-auto">
+              <img id="dd-selected-image" src="" class="h-20" />
             </div>
           </div>
         </div>

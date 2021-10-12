@@ -3,7 +3,8 @@ let lastIt = 1000
 let currentEpoch = -1
 
 window.api.receive("file-dialog-response", (filePath) => {
-    $("#dd-image-path").text(filePath)
+    $("#dd-selected-image").attr("src", filePath)
+    $("#dd-selected-image").show()
     $("#dd-image-cancel").show()
 })
 window.api.receive("deepdaze-response", (data) => {
@@ -19,7 +20,7 @@ window.api.receive("deepdaze-close", (code) => {
 
 function showProcessData(data) {
     if (data) {
-        var matchResult = data.match(/loss:\s(\-?\d+\.\d+):\s+\d+%\|.+\|\s+(\d+)\/\d+\s\[\d+:\d+<\d+:\d+,\s+(\d+\.\d+it\/s)]/) // deepdaze output [1]=loss [2]=current iteration [3]=iteration/seconds
+        var matchResult = data.match(/loss:\s(\-?\d+\.\d+):\s+\d+%\|.+\|\s+(\d+)\/\d+\s\[\d+:\d+<\d+:\d+,\s+(.+)]/) // deepdaze output [1]=loss [2]=current iteration [3]=iteration/seconds
         if (!matchResult) {
             $("#console").text(data)
         } else {
@@ -42,19 +43,21 @@ function showProcessData(data) {
 window.addEventListener('DOMContentLoaded', () => {
     $(".btn-cancel").hide()
     $("#process-data").hide()
+    $("#dd-selected-image").hide()
 
     $("#dd-input-image").on("click", () => {
         window.api.send("file-dialog")
     })
     $("#dd-image-cancel").on("click", () => {
-        $("#dd-image-path").text("")
+        $("#dd-selected-image").hide()
+        $("#dd-selected-image").attr("src", "")
         $("#dd-image-cancel").hide()
     })
     $("#dd-form").on("submit", (e) => {
         e.preventDefault()
         scenario = new DeepdazeScenario(
             $("#dd-input-text").val(),
-            $("#dd-image-path").text(),
+            $("#dd-selected-image").attr("src"),
             $("#dd-input-epochs").val(),
             $("#dd-input-iterations").val(),
             $("#dd-input-save_every").val(),
