@@ -93,7 +93,7 @@
     }
 
     a[href] {
-        @apply text-red underline dark:text-green;
+        @apply text-blue underline;
     }
 
     ol, ul {

@@ -11,9 +11,20 @@
   </head>
   <body class="text-navy scroll-smooth font-open">
     <main class="p-4 my-0 mx-auto max-w-3xl">
-      <header>
-      </header>
       <h1>Deepdaze</h1>
+      <p>Deepdaze is a simple command line tool for text to image generation using OpenAI's <a target="_blank" href="https://github.com/openai/CLIP">CLIP</a> and <a target="_blank" href="https://arxiv.org/abs/2006.09661">Siren</a>.</p>
+      <p>It is created by Phil Wang (<a target="_blank" href="https://github.com/lucidrains">@lucidrains</a>), you can found the source repository <a target="_blank" href="https://github.com/lucidrains/deep-daze">here</a>.</p>
+      <div>
+        <h2>Requirements</h2>
+        <p>This will require that you have an <strong>Nvidia GPU or AMD GPU</strong></p>
+        <ol>
+          <li>Recommended: 16GB VRAM</li>
+          <li>Minimum Requirements: 4GB VRAM (using VERY LOW settings)</li>
+        </ol>
+        <p class="font-bold"><a target="_blank" href="https://www.python.org/downloads/">Python</a> must be installed</p>
+        <h2>Installation</h2>
+      </p>
+      </div>
       <form id="dd-form">
         <div class="sm:flex">
           <div class="field mr-3 flex-initial">
@@ -29,7 +40,7 @@
               </div>
             </div>
             <div class="justify-end flex flex-auto">
-              <img id="dd-selected-image" src="" class="h-20" />
+              <img id="dd-selected-image" src="" class="h-20 shadow" />
             </div>
           </div>
         </div>
