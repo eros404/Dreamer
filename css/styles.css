@@ -738,6 +738,15 @@ input[type="submit"] {
   cursor: pointer;
 }
 
+input[type="submit"]:disabled {
+  --tw-bg-opacity: 1;
+  background-color: rgba(163, 163, 163, var(--tw-bg-opacity));
+  background-image: linear-gradient(to top, var(--tw-gradient-stops));
+  --tw-gradient-from: #2A9D8F;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(42, 157, 143, 0));
+  --tw-gradient-to: #a3a3a3;
+}
+
 input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button {
   opacity: 1;
 }

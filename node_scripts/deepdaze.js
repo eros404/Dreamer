@@ -24,8 +24,8 @@ function getDeepdazeArguments(deepdazeScenario) {
 }
 
 function spawnDeepdaze(scenario, dirname) {
-    let directoryPath = path.join(dirname, 'user_images', 'deepdaze', scenario.directoryName)
-    fs.mkdir(directoryPath, (err) => {console.log(err)})
+    let directoryPath = path.join(dirname, scenario.directoryName)
+    fs.mkdir(directoryPath, (err) => {})
     return child_process.spawn("imagine", getDeepdazeArguments(scenario), {
         encoding: 'utf8',
         shell: false,

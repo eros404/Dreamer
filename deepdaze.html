@@ -11,6 +11,11 @@
   </head>
   <body class="text-navy scroll-smooth font-open">
     <main class="p-4 my-0 mx-auto max-w-3xl">
+      <p id="output-directory-warning" class="text-red font-bold">Please select a valid path where Dreamer can create his output directory.</p>
+      <div class="flex justify-between bg-gradient-to-t from-gray-200 to-gray-100 pl-3 rounded-md shadow">
+        <p class="my-2">Output path: <code id="dreamer-output-path" class="font-bold"></code></p>
+        <button id="choose-dreamer-output-path">Choose...</button>
+      </div>
       <h1>Deepdaze</h1>
       <p>Deepdaze is a simple command line tool for text to image generation using OpenAI's <a target="_blank" href="https://github.com/openai/CLIP">CLIP</a> and <a target="_blank" href="https://arxiv.org/abs/2006.09661">Siren</a>.</p>
       <p>It is created by Phil Wang (<a target="_blank" href="https://github.com/lucidrains">@lucidrains</a>), you can found the source repository <a target="_blank" href="https://github.com/lucidrains/deep-daze">here</a>.</p>
@@ -116,7 +121,7 @@
           </div>
           <div class="field text-center">
             <input id="dd-submit" type="submit" class="btn-primary w-2/3" value="Dream &#128640;" />
-            <button id="cancel-deepdaze" type="button" class="btn-cancel w-2/3">Wake up</button>
+            <button id="cancel-deepdaze" type="button" class="btn-cancel w-2/3">Wake up &#9200;</button>
           </div> 
         </form>
       </div>

@@ -30,6 +30,20 @@ window.api.receive("deepdaze-installed-response", (code) => {
 window.api.receive("install-deepdaze-close", (code) => {
     window.api.send("ask-deepdaze-installed")
 })
+window.api.receive("user-files-path-response", (response) => {
+    $("#dreamer-output-path").text(response.path)
+    if (!response.isValid) {
+        $("#dreamer-output-path").addClass("text-red")
+        $("#dreamer-output-path").removeClass("text-green")
+        $("#dd-submit").prop("disabled", true)
+        $("#output-directory-warning").show()
+    } else {
+        $("#dreamer-output-path").addClass("text-green")
+        $("#dreamer-output-path").removeClass("text-red")
+        $("dd-submit").prop("disabled", false)
+        $("#output-directory-warning").hide()
+    }
+})
 
 function showProcessData(data) {
     if (data) {
@@ -60,6 +74,7 @@ function showProcessData(data) {
 
 $(document).ready(function() {
     window.api.send("ask-deepdaze-installed")
+    window.api.send("ask-user-files-path")
     $(".btn-cancel").hide()
     $("#process-data").hide()
     $("#dd-selected-image").hide()
@@ -110,5 +125,8 @@ $(document).ready(function() {
         } else {
             $("#dd-input-deeper").prop("checked", false)
         }
+    })
+    $("#choose-dreamer-output-path").on("click", () => {
+        window.api.send("changeOutputPath")
     })
 })

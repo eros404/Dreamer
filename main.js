@@ -1,18 +1,17 @@
 const { app, ipcMain, dialog, BrowserWindow } = require('electron')
 const path = require('path')
 const fs = require('fs')
-const Store = require('electron-store');
 
 const deepdaze = require("./node_scripts/deepdaze.js")
+const store = require("./node_scripts/store.js")
 
-const store = new Store();
 
 let mainWindow;
 function createWindow () {
   // Créer la fenêtre de navigation.
     mainWindow = new BrowserWindow({
     width: 1000,
-    height: 1000,
+    height: 1200,
     icon: path.join(__dirname, 'images', 'icon.png'),
     webPreferences: {
         nodeIntegration: false, // is default value after Electron v5
@@ -50,6 +49,41 @@ app.on('window-all-closed', function () {
     }
 })
 
+function dialogOutputPath() {
+    dialog.showOpenDialog(mainWindow, {
+        title: "Where Dreamer must create his output directory ?",
+        properties: ['openDirectory'],
+        buttonLabel: "Here !"
+    }).then(result => {
+        if (!result.canceled) {
+            fs.access(result.filePaths[0], error => {
+                if (!error) {
+                    var dreamerOutputPath = path.join(result.filePaths[0], "Dreamer")
+                    fs.mkdir(dreamerOutputPath, (err) => {})
+                    fs.mkdir(path.join(dreamerOutputPath, "deepdaze"), (err) => {})
+                    store.setUserImagesPath(dreamerOutputPath)
+                    mainWindow.webContents.send("user-files-path-response", { path: dreamerOutputPath, isValid: true })
+                }
+            })
+        }
+    })
+}
+
+ipcMain.on("ask-user-files-path", (event, args) => {
+    var path = store.getUserImagesPath()
+    var isValid = true
+    fs.access(path, error => {
+        if (error) {
+            isValid = false
+        }
+        mainWindow.webContents.send("user-files-path-response", { path, isValid })
+    })
+})
+
+ipcMain.on("changeOutputPath", (event, args) => {
+    dialogOutputPath()
+})
+
 let currentProcess
 function sendProcessResponse(data) {
     mainWindow.webContents.send('process-response', data)
@@ -57,7 +91,7 @@ function sendProcessResponse(data) {
 
 ipcMain.on("exec-deepdaze", (event, args) => {
     if (!currentProcess || currentProcess.killed) {
-        currentProcess = deepdaze.spawnDeepdaze(args, __dirname)
+        currentProcess = deepdaze.spawnDeepdaze(args, path.join(store.getUserImagesPath(), 'deepdaze'))
 
         currentProcess.on('error', (error) => {
             dialog.showMessageBox({
@@ -87,7 +121,7 @@ ipcMain.on("exec-deepdaze", (event, args) => {
 
 ipcMain.on("cancel-current-process", (event, args) => {
     if (!currentProcess.killed) {
-        dialog.showMessageBox({
+        dialog.showMessageBox(mainWindow, {
             title: 'Kill process',
             type: 'question',
             message: 'Do you really want to cancel the generation ?',
