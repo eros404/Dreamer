@@ -6,8 +6,9 @@
   "scripts": {
     "tailwind:watch": "npx tailwindcss -i ./_tailwind/styles.css -o ./css/styles.css --watch",
     "tailwind": "npx tailwindcss -i ./_tailwind/styles.css -o ./css/styles.css",
-    "start": "electron .",
-    "dev": "electron . --trace-warnings"
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "repository": {
     "type": "git",
@@ -20,13 +21,46 @@
   },
   "homepage": "https://github.com/eros404/Dreamer#readme",
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.61",
+    "@electron-forge/maker-deb": "^6.0.0-beta.61",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.61",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
+    "@electron-forge/maker-zip": "^6.0.0-beta.61",
     "autoprefixer": "^10.3.7",
     "concurrently": "^6.3.0",
-    "electron": "^15.1.1",
+    "electron": "^15.1.2",
     "postcss": "^8.3.9",
     "tailwindcss": "^2.2.16"
   },
   "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.0.1"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "dreamer"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }
