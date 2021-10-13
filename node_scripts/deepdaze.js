@@ -23,8 +23,7 @@ function getDeepdazeArguments(deepdazeScenario) {
     return arguments
 }
 
-function spawnDeepdaze(scenario, dirname) {
-    let directoryPath = path.join(dirname, scenario.directoryName)
+function spawnDeepdaze(scenario, directoryPath) {
     fs.mkdir(directoryPath, (err) => {})
     return child_process.spawn("imagine", getDeepdazeArguments(scenario), {
         encoding: 'utf8',

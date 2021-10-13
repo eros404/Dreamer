@@ -8,7 +8,6 @@ const store = require("./node_scripts/store.js")
 
 let mainWindow;
 function createWindow () {
-  // Créer la fenêtre de navigation.
     mainWindow = new BrowserWindow({
     width: 1000,
     height: 1200,
@@ -21,7 +20,6 @@ function createWindow () {
     }
   })
 
-  // et charger l'index.html de l'application.
   mainWindow.loadFile(path.join(__dirname, 'deepdaze.html'))
   // Ouvrir les outils de développement.
   mainWindow.webContents.openDevTools()
@@ -49,7 +47,18 @@ app.on('window-all-closed', function () {
     }
 })
 
-function dialogOutputPath() {
+ipcMain.on("ask-user-files-path", (event, args) => {
+    var path = store.getUserImagesPath()
+    var isValid = true
+    fs.access(path, error => {
+        if (error) {
+            isValid = false
+        }
+        mainWindow.webContents.send("user-files-path-response", { path, isValid })
+    })
+})
+
+ipcMain.on("changeOutputPath", (event, args) => {
     dialog.showOpenDialog(mainWindow, {
         title: "Where Dreamer must create his output directory ?",
         properties: ['openDirectory'],
@@ -67,31 +76,17 @@ function dialogOutputPath() {
             })
         }
     })
-}
-
-ipcMain.on("ask-user-files-path", (event, args) => {
-    var path = store.getUserImagesPath()
-    var isValid = true
-    fs.access(path, error => {
-        if (error) {
-            isValid = false
-        }
-        mainWindow.webContents.send("user-files-path-response", { path, isValid })
-    })
-})
-
-ipcMain.on("changeOutputPath", (event, args) => {
-    dialogOutputPath()
 })
 
 let currentProcess
-function sendProcessResponse(data) {
-    mainWindow.webContents.send('process-response', data)
+function sendProcessResponse(data, imageDirectoryPath) {
+    mainWindow.webContents.send('process-response', { output: data, imageDirectoryPath: path.join(imageDirectoryPath, "__IMAGENAME__") })
 }
 
-ipcMain.on("exec-deepdaze", (event, args) => {
+ipcMain.on("exec-deepdaze", (event, scenario) => {
     if (!currentProcess || currentProcess.killed) {
-        currentProcess = deepdaze.spawnDeepdaze(args, path.join(store.getUserImagesPath(), 'deepdaze'))
+        var imageDirectoryPath = path.join(store.getUserImagesPath(), 'deepdaze', scenario.directoryName)
+        currentProcess = deepdaze.spawnDeepdaze(scenario, imageDirectoryPath)
 
         currentProcess.on('error', (error) => {
             dialog.showMessageBox({
@@ -102,10 +97,10 @@ ipcMain.on("exec-deepdaze", (event, args) => {
         })
 
         currentProcess.stdout.setEncoding('utf8');
-        currentProcess.stdout.on('data', (data) => sendProcessResponse(data.toString()))
+        currentProcess.stdout.on('data', (data) => sendProcessResponse(data.toString(), imageDirectoryPath))
 
         currentProcess.stderr.setEncoding('utf8');
-        currentProcess.stderr.on('data', (data) => sendProcessResponse(data))
+        currentProcess.stderr.on('data', (data) => sendProcessResponse(data, imageDirectoryPath))
 
         currentProcess.on('close', (code) => {  
             mainWindow.webContents.send('deepdaze-close', code)

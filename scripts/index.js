@@ -1,6 +1,7 @@
 let scenario
 let lastIt = 1000
 let currentEpoch = -1
+let lastScenarioImageDirectory
 
 window.api.receive("file-dialog-response", (filePath) => {
     $("#dd-selected-image").attr("src", filePath)
@@ -8,7 +9,30 @@ window.api.receive("file-dialog-response", (filePath) => {
     $("#dd-image-cancel").show()
 })
 window.api.receive("process-response", (data) => {
-    showProcessData(data)
+    if (data && data.output) {
+        var matchResult = data.output.match(/loss:\s(\-?\d+\.\d+):\s+\d+%\|.+\|\s+(\d+)\/\d+\s\[\d+:\d+<\d+:\d+,\s+(.+)]/) // deepdaze output [1]=loss [2]=current iteration [3]=iteration/seconds
+        if (!matchResult) {
+            matchResult = data.output.match(/image updated at "\.\/(.+)"/) // image output [1]=image name
+            if (!matchResult) {
+                $("#console").text(data.output)
+            } else {
+                $("#dd-output-image").attr("src", data.imageDirectoryPath.replace("__IMAGENAME__", matchResult[1]))
+            }
+        } else {
+            var currentIt = parseInt(matchResult[2])
+            var epochProgression = currentIt / parseInt(scenario.iterations) * 100
+            $("#process-loss").text(matchResult[1])
+            $("#data-progress-bar").width(epochProgression + "%")
+            if (currentIt < lastIt) {
+                currentEpoch++
+                $("#process-current-epoch").text(currentEpoch)
+            }
+            $("#process-total-epochs").text(scenario.epochs)
+            $("#process-it-second").text(matchResult[3])
+            $("#process-data").show()
+            lastIt = currentIt
+        }
+    }
 })
 window.api.receive("deepdaze-close", (code) => {
     $('#cancel-deepdaze').hide()
@@ -44,33 +68,6 @@ window.api.receive("user-files-path-response", (response) => {
         $("#output-directory-warning").hide()
     }
 })
-
-function showProcessData(data) {
-    if (data) {
-        var matchResult = data.match(/loss:\s(\-?\d+\.\d+):\s+\d+%\|.+\|\s+(\d+)\/\d+\s\[\d+:\d+<\d+:\d+,\s+(.+)]/) // deepdaze output [1]=loss [2]=current iteration [3]=iteration/seconds
-        if (!matchResult) {
-            matchResult = data.match(/image updated at "\.\/(.+)"/) // image output [1]=image name
-            if (!matchResult) {
-                $("#console").text(data)
-            } else {
-
-            }
-        } else {
-            var currentIt = parseInt(matchResult[2])
-            var epochProgression = currentIt / parseInt(scenario.iterations) * 100
-            $("#process-loss").text(matchResult[1])
-            $("#data-progress-bar").width(epochProgression + "%")
-            if (currentIt < lastIt) {
-                currentEpoch++
-                $("#process-current-epoch").text(currentEpoch)
-            }
-            $("#process-total-epochs").text(scenario.epochs)
-            $("#process-it-second").text(matchResult[3])
-            $("#process-data").show()
-            lastIt = currentIt
-        }
-    }
-}
 
 $(document).ready(function() {
     window.api.send("ask-deepdaze-installed")
