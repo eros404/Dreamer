@@ -8,7 +8,7 @@ UI Interface built with Electron to use DeepDaze and VQGAN-CLIP
 
 Deep Daze is a simple command line tool for text to image generation using OpenAI's [CLIP](https://github.com/openai/CLIP) [Siren](https://arxiv.org/abs/2006.09661).
 
-It is created by Phil Wang ([@lucidrains](https://github.com/lucidrains)"), you can found the source repository [here](https://github.com/lucidrains/deep-daze)"</a>.</p>
+It is created by Phil Wang ([@lucidrains](https://github.com/lucidrains)), you can found the source repository [here](https://github.com/lucidrains/deep-daze).
 
 ### Requirements
 
@@ -19,10 +19,10 @@ This will require that you have an **Nvidia GPU or AMD GPU**
 
 ## Project status
 
-- [] Deep Daze generation
+- [ ] Deep Daze generation
     - [x] with text/image
-    - [] story mode
+    - [ ] story mode
     - [x] generation visualization and process status
-- [] VQGAN+CLIP generation
-- [] Image explorer
-    - [] realsr implementation for upscaling
+- [ ] VQGAN+CLIP generation
+- [ ] Image explorer
+    - [ ] realsr implementation for upscaling
