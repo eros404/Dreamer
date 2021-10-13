@@ -22,7 +22,7 @@ function createWindow () {
 
   mainWindow.loadFile(path.join(__dirname, 'deepdaze.html'))
   // Ouvrir les outils de développement.
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 }
 
 // Cette méthode sera appelée quand Electron aura fini

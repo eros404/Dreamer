@@ -1,6 +1,6 @@
 {
   "name": "dreamer",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "UI Interface built with Electron to use DeepDaze and VQGAN-CLIP",
   "main": "main.js",
   "scripts": {

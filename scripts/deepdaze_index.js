@@ -111,12 +111,17 @@ $(document).ready(function() {
     $("#install-deepdaze").on("click", () => {
         window.api.send("install-deepdaze")
     })
+    let stock_numLayers
     $("#dd-input-deeper").on("change", function() {
         if ($("#dd-input-deeper").prop("checked")) {
+            stock_numLayers = $("#dd-input-num-layers").val()
             $("#dd-input-num-layers").val(32)
+        } else {
+            $("#dd-input-num-layers").val(stock_numLayers)
         }
     })
     $("#dd-input-num-layers").on("change", function() {
+        stock_numLayers = $("#dd-input-num-layers").val()
         if ($("#dd-input-num-layers").val() == 32) {
             $("#dd-input-deeper").prop("checked", true)
         } else {
