@@ -9,8 +9,8 @@ const store = require("./node_scripts/store.js")
 let mainWindow;
 function createWindow () {
     mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 1200,
+    width: 900,
+    height: 1000,
     icon: path.join(__dirname, 'images', 'icon.png'),
     webPreferences: {
         nodeIntegration: false, // is default value after Electron v5

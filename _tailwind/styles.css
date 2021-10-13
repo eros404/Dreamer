@@ -69,7 +69,7 @@
         @apply mt-4 mb-1;
     }
     input {
-        @apply px-2 py-1 rounded-md border border-gray-300 shadow;
+        @apply px-2 py-1 rounded-md border border-gray-300 shadow dark:border-gray-800 dark:bg-gray-900;
     }
     input[type="checkbox"] {
         @apply w-4 h-4;
@@ -89,7 +89,7 @@
     }
 
     button {
-        @apply bg-gray-400 rounded-md px-2 py-1 border border-gray-300 bg-gradient-to-t from-gray-400 to-gray-300 shadow;
+        @apply bg-gray-400 rounded-md px-2 py-1 border border-gray-300 bg-gradient-to-t from-gray-400 to-gray-300 shadow dark:from-gray-900 dark:to-gray-800 dark:border-gray-800;
     }
 
     a[href] {
@@ -146,13 +146,19 @@
 
 @layer components {
     .field {
-        @apply mb-2;
+        @apply pb-2;
     }
     .btn-cancel {
         @apply bg-red text-white bg-gradient-to-t from-red to-lightred;
     }
     .btn-primary {
         @apply bg-green text-white cursor-pointer font-bold bg-gradient-to-t from-darkgreen to-green;
+    }
+    .container-accent {
+        @apply bg-gradient-to-t from-gray-200 to-gray-100 rounded-md shadow dark:from-gray-900 dark:to-gray-900;
+    }
+    .container-accent2 {
+        @apply bg-gradient-to-t from-gray-300 to-gray-200 rounded-md shadow dark:from-gray-800 dark:to-gray-800;
     }
 }
 

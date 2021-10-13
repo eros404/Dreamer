@@ -9,10 +9,13 @@
     <link rel="stylesheet" href="./css/styles.css">
     <title>Dreamer</title>
   </head>
-  <body class="text-navy scroll-smooth font-open">
+  <body class="text-navy scroll-smooth font-open dark:bg-black dark:bg-opacity-95 dark:text-gray-50">
     <main class="p-4 my-0 mx-auto max-w-3xl">
+      <header class="mb-4 h-20">
+        <img class="mx-auto h-full" src="./images/icon.png">
+      </header>
       <p id="output-directory-warning" class="text-red font-bold">Please select a valid path where Dreamer can create his output directory.</p>
-      <div class="flex justify-between bg-gradient-to-t from-gray-200 to-gray-100 pl-3 rounded-md shadow">
+      <div class="flex justify-between container-accent pl-3">
         <p class="my-2">Output path: <code id="dreamer-output-path" class="font-bold"></code></p>
         <button id="choose-dreamer-output-path">Choose...</button>
       </div>
@@ -25,7 +28,7 @@
         <li>Recommended: 16GB VRAM</li>
         <li>Minimum Requirements: 4GB VRAM (using VERY LOW settings)</li>
       </ul>
-      <div id="dd-install" class="bg-gradient-to-t from-gray-200 to-gray-100 px-3 rounded-md shadow">
+      <div id="dd-install" class="container-accent px-3 pt-0.5">
         <h2>Installation</h2>
         <p class="font-bold"><a target="_blank" href="https://www.python.org/downloads/">Python</a> must be installed</p>
         <button id="install-deepdaze" class="btn-primary my-2">Install Deepdaze &#128295;</button>
@@ -33,7 +36,7 @@
       </div>
       <hr>
       <div id="dd-form-container">
-        <form id="dd-form" class="bg-gradient-to-t from-gray-200 to-gray-100 p-3 rounded-md shadow">
+        <form id="dd-form" class="container-accent p-3">
           <div class="sm:flex">
             <div class="field mr-3 flex-initial">
               <p><label for="dd-input-text">Text</label></p>
@@ -57,7 +60,7 @@
               <div class="flex">
                 <div class="field mr-3">
                   <p><label for="dd-input-epochs">Epochs</label></p>
-                  <input id="dd-input-epochs" name="dd-input-epochs" type="number" value="10" min="1" max="100" />
+                  <input id="dd-input-epochs" name="dd-input-epochs" type="number" value="8" min="1" max="100" />
                 </div>
                 <div class="field">
                   <p><label for="dd-input-iterations">Iterations</label></p>
@@ -65,12 +68,12 @@
                 </div>
               </div>
               <div class="field">
-                <p><label for="dd-input-save_every">Save every</label></p>
-                <input id="dd-input-save_every" name="dd-input-save_every" type="number" value="100" min="10" max="2100" step="10" />
-              </div>
-              <div class="field">
                 <p><label for="dd-input-image_width">Image width</label></p>
                 <input id="dd-input-image_width" name="dd-input-image_width" type="number" value="256" min="16" max="1096" step="16" />
+              </div>
+              <div class="field">
+                <p><label for="dd-input-save_every">Save every</label></p>
+                <input id="dd-input-save_every" name="dd-input-save_every" type="number" value="100" min="10" max="2100" step="10" />
               </div>
               <div class="flex">
                 <div class="field mr-3">
@@ -88,7 +91,7 @@
               </div>
             </div>
             <div>
-              <div class="bg-gradient-to-t from-gray-300 to-gray-200 px-3 rounded-md shadow">
+              <div class="container-accent2 px-3">
                 <h4 class="text-center">Neural net options</h4>
                 <div class="flex">
                   <div class="field mr-3">
@@ -119,7 +122,7 @@
               </div>
             </div>
           </div>
-          <div class="field text-center">
+          <div class="text-center">
             <input id="dd-submit" type="submit" class="btn-primary w-2/3" value="Dream &#128640;" />
             <button id="cancel-deepdaze" type="button" class="btn-cancel w-2/3">Wake up &#9200;</button>
           </div> 
