@@ -662,7 +662,7 @@ video {
 
 h1, h2, h3, h4, h5, h6 {
   margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
   font-weight: 700;
 }
 
@@ -736,6 +736,10 @@ input[type="checkbox"] {
 
 input[type="submit"] {
   cursor: pointer;
+}
+
+input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button {
+  opacity: 1;
 }
 
 label {

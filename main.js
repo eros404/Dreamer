@@ -1,8 +1,11 @@
 const { app, ipcMain, dialog, BrowserWindow } = require('electron')
 const path = require('path')
 const fs = require('fs')
+const Store = require('electron-store');
 
 const deepdaze = require("./node_scripts/deepdaze.js")
+
+const store = new Store();
 
 let mainWindow;
 function createWindow () {
@@ -47,34 +50,55 @@ app.on('window-all-closed', function () {
     }
 })
 
+let currentProcess
 function sendProcessResponse(data) {
     mainWindow.webContents.send('process-response', data)
 }
 
 ipcMain.on("exec-deepdaze", (event, args) => {
-    var child = deepdaze.spawnDeepdaze(args, __dirname)
+    if (!currentProcess || currentProcess.killed) {
+        currentProcess = deepdaze.spawnDeepdaze(args, __dirname)
 
-    child.on('error', (error) => {
+        currentProcess.on('error', (error) => {
+            dialog.showMessageBox({
+                title: 'Error',
+                type: 'warning',
+                message: 'Error occured.\r\n' + error
+            })
+        })
+
+        currentProcess.stdout.setEncoding('utf8');
+        currentProcess.stdout.on('data', (data) => sendProcessResponse(data.toString()))
+
+        currentProcess.stderr.setEncoding('utf8');
+        currentProcess.stderr.on('data', (data) => sendProcessResponse(data))
+
+        currentProcess.on('close', (code) => {  
+            mainWindow.webContents.send('deepdaze-close', code)
+        })
+    } else {
         dialog.showMessageBox({
             title: 'Error',
             type: 'warning',
-            message: 'Error occured.\r\n' + error
+            message: 'A process is already launched' + error
         })
-    })
+    }
+})
 
-    child.stdout.setEncoding('utf8');
-    child.stdout.on('data', (data) => sendProcessResponse(data.toString()))
-
-    child.stderr.setEncoding('utf8');
-    child.stderr.on('data', (data) => sendProcessResponse(data))
-
-    child.on('close', (code) => {  
-        mainWindow.webContents.send('deepdaze-close', code)
-    })
-
-    ipcMain.on("cancel-deepdaze", (event, args) => {
-        child.kill()
-    })
+ipcMain.on("cancel-current-process", (event, args) => {
+    if (!currentProcess.killed) {
+        dialog.showMessageBox({
+            title: 'Kill process',
+            type: 'question',
+            message: 'Do you really want to cancel the generation ?',
+            buttons: ['Yes', 'No'],
+            defaultId: 1
+        }).then(promise => {
+            if (promise.response == 0) {
+                currentProcess.kill()
+            }
+        })
+    }
 })
 
 ipcMain.on("ask-deepdaze-installed", (event, args) => {

@@ -11,7 +11,11 @@ function getDeepdazeArguments(deepdazeScenario) {
         "--image_width=" + deepdazeScenario.imageWidth,
         "--deeper=" + (deepdazeScenario.deeper ? "True" : "False"),
         "--open_folder=" + (deepdazeScenario.openFolder ? "True" : "False"),
-        "--save_gif=" + (deepdazeScenario.saveGIF ? "True" : "False")
+        "--save_gif=" + (deepdazeScenario.saveGIF ? "True" : "False"),
+        "--learning_rate=" + deepdazeScenario.learningRate,
+        "--num_layers=" + deepdazeScenario.numLayers,
+        "--hidden_size=" + deepdazeScenario.layerSize,
+        "--batch_size=" + deepdazeScenario.batchSize
     ]
     if (deepdazeScenario.image) {
         arguments.push("--img=" + deepdazeScenario.image)
@@ -19,11 +23,10 @@ function getDeepdazeArguments(deepdazeScenario) {
     return arguments
 }
 
-function spawnDeepdaze(args, dirname) {
-    let directoryName = new Date().toISOString().replace(/T/, '_').replaceAll(":", '-').replace(/\..+/, '')
-    let directoryPath = path.join(dirname, 'user_images', 'deepdaze', directoryName)
+function spawnDeepdaze(scenario, dirname) {
+    let directoryPath = path.join(dirname, 'user_images', 'deepdaze', scenario.directoryName)
     fs.mkdir(directoryPath, (err) => {console.log(err)})
-    return child_process.spawn("imagine", getDeepdazeArguments(args), {
+    return child_process.spawn("imagine", getDeepdazeArguments(scenario), {
         encoding: 'utf8',
         shell: false,
         cwd: directoryPath

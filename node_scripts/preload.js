@@ -4,7 +4,7 @@ contextBridge.exposeInMainWorld(
     "api", {
         send: (channel, data) => {
             // whitelist channels
-            let validChannels = ["exec-deepdaze", "cancel-deepdaze", "file-dialog", "ask-deepdaze-installed", "install-deepdaze"]
+            let validChannels = ["exec-deepdaze", "cancel-current-process", "file-dialog", "ask-deepdaze-installed", "install-deepdaze"]
             if (validChannels.includes(channel)) {
                 ipcRenderer.send(channel, data)
             }

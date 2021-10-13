@@ -21,10 +21,10 @@ window.api.receive("deepdaze-close", (code) => {
 window.api.receive("deepdaze-installed-response", (code) => {
     if (code == 0) {
         $("#dd-install").hide()
-        $("#dd-form").show()
+        $("#dd-form-container").show()
     } else {
         $("#dd-install").show()
-        $("#dd-form").hide()
+        $("#dd-form-container").hide()
     }
 })
 window.api.receive("install-deepdaze-close", (code) => {
@@ -35,7 +35,12 @@ function showProcessData(data) {
     if (data) {
         var matchResult = data.match(/loss:\s(\-?\d+\.\d+):\s+\d+%\|.+\|\s+(\d+)\/\d+\s\[\d+:\d+<\d+:\d+,\s+(.+)]/) // deepdaze output [1]=loss [2]=current iteration [3]=iteration/seconds
         if (!matchResult) {
-            $("#console").text(data)
+            matchResult = data.match(/image updated at "\.\/(.+)"/) // image output [1]=image name
+            if (!matchResult) {
+                $("#console").text(data)
+            } else {
+
+            }
         } else {
             var currentIt = parseInt(matchResult[2])
             var epochProgression = currentIt / parseInt(scenario.iterations) * 100
@@ -53,7 +58,7 @@ function showProcessData(data) {
     }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+$(document).ready(function() {
     window.api.send("ask-deepdaze-installed")
     $(".btn-cancel").hide()
     $("#process-data").hide()
@@ -67,7 +72,7 @@ window.addEventListener('DOMContentLoaded', () => {
         $("#dd-selected-image").attr("src", "")
         $("#dd-image-cancel").hide()
     })
-    $("#dd-form").on("submit", (e) => {
+    $("#dd-form").off("submit").on("submit", (e) => {
         e.preventDefault()
         scenario = new DeepdazeScenario(
             $("#dd-input-text").val(),
@@ -79,15 +84,31 @@ window.addEventListener('DOMContentLoaded', () => {
             $("#dd-input-deeper").is(":checked"),
             $("#dd-input-open_forder").is(":checked"),
             $("#dd-input-save_GIF").is(":checked"),
+            $("#dd-input-learning-rate").val(),
+            $("#dd-input-num-layers").val(),
+            $("#dd-input-layer-size").val(),
+            $("#dd-input-batch-size").val()
         )
         window.api.send("exec-deepdaze", scenario)
         $('#cancel-deepdaze').show()
         $('#dd-submit').hide()
     })
-    $("#cancel-deepdaze").on("click", () => {
-        window.api.send("cancel-deepdaze")
+    $("#cancel-deepdaze").off('click').on("click", () => {
+        window.api.send("cancel-current-process")
     })
     $("#install-deepdaze").on("click", () => {
         window.api.send("install-deepdaze")
+    })
+    $("#dd-input-deeper").on("change", function() {
+        if ($("#dd-input-deeper").prop("checked")) {
+            $("#dd-input-num-layers").val(32)
+        }
+    })
+    $("#dd-input-num-layers").on("change", function() {
+        if ($("#dd-input-num-layers").val() == 32) {
+            $("#dd-input-deeper").prop("checked", true)
+        } else {
+            $("#dd-input-deeper").prop("checked", false)
+        }
     })
 })

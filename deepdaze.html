@@ -27,66 +27,99 @@
       </p>
       </div>
       <hr>
-      <form id="dd-form" class="bg-gradient-to-t from-gray-200 to-gray-100 p-3 rounded-md shadow">
-        <div class="sm:flex">
-          <div class="field mr-3 flex-initial">
-            <p><label for="dd-input-text">Text</label></p>
-            <input id="dd-input-text" name="dd-input-text" type="text" placeholder="A Panda bicking in space" required maxlength="77" />
-          </div>
-          <div class="flex-auto flex">
-            <div class="field flex-initial">
-              <p><label for="dd-input-image">Image</label></p>
-              <div>
-                <button id="dd-input-image" name="dd-input-image" type="button">Choose...</button>
-                <button id="dd-image-cancel" type="button" class="btn-cancel">&#10008;</button>
+      <div id="dd-form-container">
+        <form id="dd-form" class="bg-gradient-to-t from-gray-200 to-gray-100 p-3 rounded-md shadow">
+          <div class="sm:flex">
+            <div class="field mr-3 flex-initial">
+              <p><label for="dd-input-text">Text</label></p>
+              <input id="dd-input-text" name="dd-input-text" type="text" placeholder="A Panda bicking in space" required maxlength="77" />
+            </div>
+            <div class="flex-auto flex">
+              <div class="field flex-initial">
+                <p><label for="dd-input-image">Image</label></p>
+                <div>
+                  <button id="dd-input-image" name="dd-input-image" type="button">Choose...</button>
+                  <button id="dd-image-cancel" type="button" class="btn-cancel">&#10008;</button>
+                </div>
+              </div>
+              <div class="justify-end flex flex-auto">
+                <img id="dd-selected-image" src="" class="h-20 shadow rounded-md" />
               </div>
             </div>
-            <div class="justify-end flex flex-auto">
-              <img id="dd-selected-image" src="" class="h-20 shadow rounded-md" />
+          </div>
+          <div class="sm:flex justify-between">
+            <div>
+              <div class="flex">
+                <div class="field mr-3">
+                  <p><label for="dd-input-epochs">Epochs</label></p>
+                  <input id="dd-input-epochs" name="dd-input-epochs" type="number" value="10" min="1" max="100" />
+                </div>
+                <div class="field">
+                  <p><label for="dd-input-iterations">Iterations</label></p>
+                  <input id="dd-input-iterations" name="dd-input-iterations" type="number" value="1050" min="50" max="2100" step="50" />
+                </div>
+              </div>
+              <div class="field">
+                <p><label for="dd-input-save_every">Save every</label></p>
+                <input id="dd-input-save_every" name="dd-input-save_every" type="number" value="100" min="10" max="2100" step="10" />
+              </div>
+              <div class="field">
+                <p><label for="dd-input-image_width">Image width</label></p>
+                <input id="dd-input-image_width" name="dd-input-image_width" type="number" value="512" min="16" max="1096" step="16" />
+              </div>
+              <div class="flex">
+                <div class="field mr-3">
+                  <p>
+                    <input id="dd-input-open_forder" name="dd-input-open_forder" type="checkbox" checked />
+                    <label for="dd-input-open_forder">Open folder</label>
+                  </p>
+                </div>
+                <div class="field">
+                  <p>
+                    <input id="dd-input-save_GIF" name="dd-input-save_GIF" type="checkbox" />
+                    <label for="dd-input-save_GIF">Save GIF</label>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="bg-gradient-to-t from-gray-300 to-gray-200 px-3 rounded-md shadow">
+                <h4 class="text-center">Neural net options</h4>
+                <div class="flex">
+                  <div class="field mr-3">
+                    <p><label for="dd-input-learning-rate">Learning rate</label></p>
+                    <input id="dd-input-learning-rate" name="dd-input-learning-rate" type="number" value="0.000005" min="0.000005" max="0.0000200" step="0.0000025" />
+                  </div>
+                  <div class="field">
+                    <p><label for="dd-input-num-layers">Number of layers</label></p>
+                    <input id="dd-input-num-layers" name="dd-input-num-layers" type="number" value="16" min="12" max="44" step="4" />
+                  </div>
+                </div>
+                <div class="flex">
+                  <div class="field mr-3">
+                    <p><label for="dd-input-layer-size">Layer size</label></p>
+                    <input id="dd-input-layer-size" name="dd-input-layer-size" type="number" value="256" min="256" max="512" step="64" />
+                  </div>
+                  <div class="field">
+                    <p><label for="dd-input-batch-size">Batch size</label></p>
+                    <input id="dd-input-batch-size" name="dd-input-batch-size" type="number" value="4" min="4" max="64" step="4" />
+                  </div>
+                </div>
+                <div class="field">
+                  <p>
+                    <input id="dd-input-deeper" name="dd-input-deeper" type="checkbox" />
+                    <label for="dd-input-deeper">Deeper</label>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="flex">
-          <div class="field mr-3">
-            <p><label for="dd-input-epochs">Epochs</label></p>
-            <input id="dd-input-epochs" name="dd-input-epochs" type="number" value="10" min="1" max="100" />
-          </div>
-          <div class="field">
-            <p><label for="dd-input-iterations">Iterations</label></p>
-            <input id="dd-input-iterations" name="dd-input-iterations" type="number" value="1050" min="50" max="2100" step="50" />
-          </div>
-        </div>
-        <div class="field">
-          <p><label for="dd-input-save_every">Save every</label></p>
-          <input id="dd-input-save_every" name="dd-input-save_every" type="number" value="100" min="10" max="2100" step="10" />
-        </div>
-        <div class="field">
-          <p><label for="dd-input-image_width">Image width</label></p>
-          <input id="dd-input-image_width" name="dd-input-image_width" type="number" value="512" min="16" max="1096" step="16" />
-        </div>
-        <div class="field">
-          <p>
-            <input id="dd-input-deeper" name="dd-input-deeper" type="checkbox" />
-            <label for="dd-input-deeper">Deeper</label>
-          </p>
-        </div>
-        <div class="field">
-          <p>
-            <input id="dd-input-open_forder" name="dd-input-open_forder" type="checkbox" checked />
-            <label for="dd-input-open_forder">Open folder</label>
-          </p>
-        </div>
-        <div class="field">
-          <p>
-            <input id="dd-input-save_GIF" name="dd-input-save_GIF" type="checkbox" />
-            <label for="dd-input-save_GIF">Save GIF</label>
-          </p>
-        </div>
-        <div class="field text-center">
-          <input id="dd-submit" type="submit" class="btn-primary w-2/3" value="Dream &#128640;" />
-          <button id="cancel-deepdaze" type="button" class="btn-cancel w-2/3">Cancel</button>
-        </div> 
-      </form>
+          <div class="field text-center">
+            <input id="dd-submit" type="submit" class="btn-primary w-2/3" value="Dream &#128640;" />
+            <button id="cancel-deepdaze" type="button" class="btn-cancel w-2/3">Wake up</button>
+          </div> 
+        </form>
+      </div>
       <p id="console" class="bg-gray-800 text-white min-h-1.75 w-full rounded-md shadow px-2 py-1 font-mono"></p>
       <div id="process-data">
         <div class="flex w-full font-mono">
@@ -101,6 +134,7 @@
           </p>
           <p id="process-it-second" class="text-right flex-auto mx-2"></p>
         </div>
+        <img id="dd-output-image" src="" class="rounded-md shadow" />
       </div>
     </main>
   </body>

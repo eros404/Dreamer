@@ -41,7 +41,7 @@
     }
 
     h1, h2, h3, h4, h5, h6 {
-        @apply my-4 font-bold;
+        @apply mt-4 mb-1 font-bold;
     }
     h1, h2 {
         @apply border-gray-200 border-b dark:border-gray-700;
@@ -76,6 +76,10 @@
     }
     input[type="submit"] {
         @apply cursor-pointer;
+    }
+    input[type="number"]::-webkit-inner-spin-button, 
+    input[type="number"]::-webkit-outer-spin-button {  
+        @apply opacity-100;
     }
     label {
         @apply font-bold;
