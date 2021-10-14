@@ -20,6 +20,7 @@ This will require that you have an **Nvidia GPU or AMD GPU**
 ## Project status
 
 - [ ] Deep Daze generation
+    - [ ] add options explanation
     - [x] with text/image
     - [ ] story mode
     - [x] generation visualization and process status
