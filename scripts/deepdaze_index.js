@@ -11,18 +11,10 @@ window.api.receive("file-dialog-response", (filePath) => {
 window.api.receive("process-response", (data) => {
     if (data && data.output) {
         var matchResult = data.output.match(/loss:\s(\-?\d+\.\d+):\s+\d+%\|.+\|\s+(\d+)\/\d+\s\[\d+:\d+<\d+:\d+,\s+(.+)]/) // deepdaze output [1]=loss [2]=current iteration [3]=iteration/seconds
-        if (!matchResult) {
-            matchResult = data.output.match(/image updated at "\.\/(.+)"/) // image output [1]=image name
-            if (!matchResult) {
-                $("#console").text(data.output)
-            } else {
-                $("#dd-output-image").attr("src", data.imageDirectoryPath.replace("__IMAGENAME__", matchResult[1]))
-            }
-        } else {
+        if (matchResult) {
             var currentIt = parseInt(matchResult[2])
-            var epochProgression = currentIt / parseInt(scenario.iterations) * 100
             $("#process-loss").text(matchResult[1])
-            $("#data-progress-bar").width(epochProgression + "%")
+            $("#data-progress-bar").width(currentIt / parseInt(scenario.iterations) * 100 + "%")
             if (currentIt < lastIt) {
                 currentEpoch++
                 $("#process-current-epoch").text(currentEpoch)
@@ -31,6 +23,17 @@ window.api.receive("process-response", (data) => {
             $("#process-it-second").text(matchResult[3])
             $("#process-data").show()
             lastIt = currentIt
+            return
+        }
+        matchResult = data.output.match(/image updated at "\.\/(.+)"/) // image output [1]=image name
+        if (matchResult) {
+            $("#dd-output-image").attr("src", data.imageDirectoryPath.replace("__IMAGENAME__", matchResult[1]))
+            return
+        }
+        if (data.output.includes("CUDA is not available")) {
+            $("#cuda-warning").show()
+        } else {
+            $("#console").text(data.output)
         }
     }
 })
@@ -75,17 +78,19 @@ $(document).ready(function() {
     $(".btn-cancel").hide()
     $("#process-data").hide()
     $("#dd-selected-image").hide()
+    $("#cuda-warning").hide()
 
-    $("#dd-input-image").on("click", () => {
+    $("#dd-input-image").off('click').on("click", () => {
         window.api.send("file-dialog")
     })
-    $("#dd-image-cancel").on("click", () => {
+    $("#dd-image-cancel").off('click').on("click", () => {
         $("#dd-selected-image").hide()
         $("#dd-selected-image").attr("src", "")
         $("#dd-image-cancel").hide()
     })
     $("#dd-form").off("submit").on("submit", (e) => {
         e.preventDefault()
+        $("#cuda-warning").hide()
         scenario = new DeepdazeScenario(
             $("#dd-input-text").val(),
             $("#dd-selected-image").attr("src"),
@@ -108,7 +113,7 @@ $(document).ready(function() {
     $("#cancel-deepdaze").off('click').on("click", () => {
         window.api.send("cancel-current-process")
     })
-    $("#install-deepdaze").on("click", () => {
+    $("#install-deepdaze").off('click').on("click", () => {
         window.api.send("install-deepdaze")
     })
     let stock_numLayers
@@ -128,7 +133,13 @@ $(document).ready(function() {
             $("#dd-input-deeper").prop("checked", false)
         }
     })
-    $("#choose-dreamer-output-path").on("click", () => {
+    $("#choose-dreamer-output-path").off('click').on("click", () => {
         window.api.send("changeOutputPath")
+    })
+    $("#install-CUDA-Windows").off('click').on("click", () => {
+        window.api.send("install-CUDA-Windows")
+    })
+    $("#install-CUDA-Linux").off('click').on("click", () => {
+        window.api.send("install-CUDA-Linux")
     })
 })

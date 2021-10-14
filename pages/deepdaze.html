@@ -35,6 +35,28 @@
       </p>
       </div>
       <hr>
+      <div id="cuda-warning" class="container-warning px-3 pb-3 pt-1">
+        <h4>Warning</h4>
+        <p class="font-bold">The process is not using your graphical card because CUDA is not available.</p>
+        <button id="install-CUDA-Windows" class="mr-3">Install CUDA (Windows)</button><button id="install-CUDA-Linux">Install CUDA (Linux)</button>
+        <p class="text-sm"><a href="https://pytorch.org/get-started/locally/">Install manually</a></p>
+      </div>
+      <div id="process-data">
+        <div class="flex w-full font-mono">
+          <p class="text-center flex-initial mx-2">
+            loss: <span id="process-loss"></span>
+          </p>
+          <div id="data-progress" class="w-40 flex-auto mx-2 h-4 border shadow mt-4">
+            <div id="data-progress-bar" class="h-full bg-green bg-gradient-to-r from-darkgreen to-green"></div>
+          </div>
+          <p class="text-left flex-auto mx-2">
+            <span id="process-current-epoch"></span>/<span id="process-total-epochs"></span> epochs
+          </p>
+          <p id="process-it-second" class="text-right flex-auto mx-2"></p>
+        </div>
+        <img id="dd-output-image" src="" class="rounded-md shadow" />
+      </div>
+      <p id="console" class="bg-gray-800 text-white min-h-1.75 w-full rounded-md shadow px-2 py-1 font-mono"></p>
       <div id="dd-form-container">
         <form id="dd-form" class="container-accent p-3">
           <div class="sm:flex">
@@ -127,22 +149,6 @@
             <button id="cancel-deepdaze" type="button" class="btn-cancel w-2/3">Wake up &#9200;</button>
           </div> 
         </form>
-      </div>
-      <p id="console" class="bg-gray-800 text-white min-h-1.75 w-full rounded-md shadow px-2 py-1 font-mono"></p>
-      <div id="process-data">
-        <div class="flex w-full font-mono">
-          <p class="text-center flex-initial mx-2">
-            loss: <span id="process-loss"></span>
-          </p>
-          <div id="data-progress" class="w-40 flex-auto mx-2 h-4 border shadow mt-4">
-            <div id="data-progress-bar" class="h-full bg-green bg-gradient-to-r from-darkgreen to-green"></div>
-          </div>
-          <p class="text-left flex-auto mx-2">
-            <span id="process-current-epoch"></span>/<span id="process-total-epochs"></span> epochs
-          </p>
-          <p id="process-it-second" class="text-right flex-auto mx-2"></p>
-        </div>
-        <img id="dd-output-image" src="" class="rounded-md shadow" />
       </div>
       <small class="text-sm text-gray-500">by Eros404</small>
     </main>

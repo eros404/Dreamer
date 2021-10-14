@@ -160,6 +160,9 @@
     .container-accent2 {
         @apply bg-gradient-to-t from-gray-300 to-gray-200 rounded-md shadow dark:from-gray-800 dark:to-gray-800;
     }
+    .container-warning {
+        @apply text-white bg-gradient-to-t from-red to-lightred rounded-md shadow;
+    }
 }
 
 @layer utilities {

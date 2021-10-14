@@ -32,15 +32,8 @@ function spawnDeepdaze(scenario, directoryPath) {
     })
 }
 
-function spawnDeepdazeInstalled() {
+function spawnDeepdazeHelp() {
     return child_process.spawn('imagine', ['--', '--help'], {
-        encoding: 'utf8',
-        shell: false
-    })
-}
-
-function spawnInstallDeepdaze() {
-    return child_process.spawn('python', ['-m', 'pip', 'install', 'deep-daze'], {
         encoding: 'utf8',
         shell: false
     })
@@ -48,6 +41,5 @@ function spawnInstallDeepdaze() {
 
 module.exports = {
     spawnDeepdaze: spawnDeepdaze,
-    spawnDeepdazeInstalled: spawnDeepdazeInstalled,
-    spawnInstallDeepdaze: spawnInstallDeepdaze
+    spawnDeepdazeInstalled: spawnDeepdazeHelp
 }

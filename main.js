@@ -4,6 +4,7 @@ const fs = require('fs')
 
 const deepdaze = require("./node_scripts/deepdaze.js")
 const store = require("./node_scripts/store.js")
+const pipInstall = require("./node_scripts/pip_install.js")
 
 
 let mainWindow;
@@ -145,7 +146,7 @@ ipcMain.on("ask-deepdaze-installed", (event, args) => {
     })
 })
 ipcMain.on("install-deepdaze", (event, args) => {
-    var child = deepdaze.spawnInstallDeepdaze()
+    var child = pipInstall.installDeepdaze()
     child.on('error', (error) => {
         dialog.showMessageBox({
             title: 'Error',
@@ -170,5 +171,26 @@ ipcMain.on("file-dialog", (event, args) => {
         if (!result.canceled) {
             mainWindow.webContents.send("file-dialog-response", result.filePaths[0])
         }
+    })
+})
+
+ipcMain.on("install-CUDA-Windows", (event, args) => {
+    var child = pipInstall.installCUDAWindows()
+    child.on('error', (error) => {
+        dialog.showMessageBox({
+            title: 'Error',
+            type: 'warning',
+            message: 'Error occured.\r\n' + error
+        })
+    })
+})
+ipcMain.on("install-CUDA-Linux", (event, args) => {
+    var child = pipInstall.installCUDALinux()
+    child.on('error', (error) => {
+        dialog.showMessageBox({
+            title: 'Error',
+            type: 'warning',
+            message: 'Error occured.\r\n' + error
+        })
     })
 })

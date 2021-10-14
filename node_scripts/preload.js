@@ -11,7 +11,9 @@ contextBridge.exposeInMainWorld(
                 "ask-deepdaze-installed",
                 "install-deepdaze",
                 "ask-user-files-path",
-                "changeOutputPath"
+                "changeOutputPath",
+                "install-CUDA-Windows",
+                "install-CUDA-Linux"
             ]
             if (validChannels.includes(channel)) {
                 ipcRenderer.send(channel, data)
