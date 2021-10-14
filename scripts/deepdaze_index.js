@@ -64,7 +64,7 @@ window.api.receive("user-files-path-response", (response) => {
     } else {
         $("#dreamer-output-path").addClass("text-green")
         $("#dreamer-output-path").removeClass("text-red")
-        $("dd-submit").prop("disabled", false)
+        $("#dd-submit").prop("disabled", false)
         $("#output-directory-warning").hide()
     }
 })

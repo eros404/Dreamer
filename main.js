@@ -20,7 +20,7 @@ function createWindow () {
     }
   })
 
-  mainWindow.loadFile(path.join(__dirname, 'deepdaze.html'))
+  mainWindow.loadFile(path.join(__dirname, './pages/deepdaze.html'))
   // Ouvrir les outils de développement.
   //mainWindow.webContents.openDevTools()
 }
@@ -67,11 +67,18 @@ ipcMain.on("changeOutputPath", (event, args) => {
         if (!result.canceled) {
             fs.access(result.filePaths[0], error => {
                 if (!error) {
-                    var dreamerOutputPath = path.join(result.filePaths[0], "Dreamer")
-                    fs.mkdir(dreamerOutputPath, (err) => {})
-                    fs.mkdir(path.join(dreamerOutputPath, "deepdaze"), (err) => {})
-                    store.setUserImagesPath(dreamerOutputPath)
-                    mainWindow.webContents.send("user-files-path-response", { path: dreamerOutputPath, isValid: true })
+                    if (result.filePaths[0].match(/Dreamer$/i)) {
+                        fs.mkdir(path.join(result.filePaths[0], "deepdaze"), (err) => {})
+                        mainWindow.webContents.send("user-files-path-response", { path: result.filePaths[0], isValid: true })
+                    } else {
+                        var dreamerOutputPath = path.join(result.filePaths[0], "Dreamer")
+                        fs.mkdir(dreamerOutputPath, (err) => {})
+                        fs.mkdir(path.join(dreamerOutputPath, "deepdaze"), (err) => {})
+                        store.setUserImagesPath(dreamerOutputPath)
+                        mainWindow.webContents.send("user-files-path-response", { path: dreamerOutputPath, isValid: true })
+                    }
+                } else {
+                    mainWindow.webContents.send("user-files-path-response", { path: "none", isValid: false })
                 }
             })
         }
