@@ -136,10 +136,4 @@ $(document).ready(function() {
     $("#choose-dreamer-output-path").off('click').on("click", () => {
         window.api.send("changeOutputPath")
     })
-    $("#install-CUDA-Windows").off('click').on("click", () => {
-        window.api.send("install-CUDA-Windows")
-    })
-    $("#install-CUDA-Linux").off('click').on("click", () => {
-        window.api.send("install-CUDA-Linux")
-    })
 })

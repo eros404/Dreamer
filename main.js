@@ -70,6 +70,7 @@ ipcMain.on("changeOutputPath", (event, args) => {
                 if (!error) {
                     if (result.filePaths[0].match(/Dreamer$/i)) {
                         fs.mkdir(path.join(result.filePaths[0], "deepdaze"), (err) => {})
+                        store.setUserImagesPath(result.filePaths[0])
                         mainWindow.webContents.send("user-files-path-response", { path: result.filePaths[0], isValid: true })
                     } else {
                         var dreamerOutputPath = path.join(result.filePaths[0], "Dreamer")
@@ -117,7 +118,7 @@ ipcMain.on("exec-deepdaze", (event, scenario) => {
         dialog.showMessageBox({
             title: 'Error',
             type: 'warning',
-            message: 'A process is already launched' + error
+            message: 'A process is already launched.'
         })
     }
 })

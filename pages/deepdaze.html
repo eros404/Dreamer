@@ -37,9 +37,7 @@
       <hr>
       <div id="cuda-warning" class="container-warning px-3 pb-3 pt-1">
         <h4>Warning</h4>
-        <p class="font-bold">The process is not using your graphical card because CUDA is not available.</p>
-        <button id="install-CUDA-Windows" class="mr-3">Install CUDA (Windows)</button><button id="install-CUDA-Linux">Install CUDA (Linux)</button>
-        <p class="text-sm"><a href="https://pytorch.org/get-started/locally/">Install manually</a></p>
+        <p class="font-bold">The process is not using your graphical card because CUDA is not available. <a target="_blank" href="https://pytorch.org/get-started/locally/">Install manually.</a></p>
       </div>
       <div id="process-data">
         <div class="flex w-full font-mono">
@@ -62,7 +60,10 @@
           <div class="sm:flex">
             <div class="field mr-3 flex-initial">
               <p><label for="dd-input-text">Text</label></p>
-              <input id="dd-input-text" name="dd-input-text" type="text" placeholder="A Panda bicking in space" required maxlength="77" />
+              <span class="tooltip">
+                <input id="dd-input-text" name="dd-input-text" type="text" placeholder="A Panda biking in space" required maxlength="77" />
+                <span class="tooltiptext">A phrase which you would like to visualize.</span>
+              </span>
             </div>
             <div class="flex-auto flex">
               <div class="field flex-initial">
@@ -82,20 +83,29 @@
               <div class="flex">
                 <div class="field mr-3">
                   <p><label for="dd-input-epochs">Epochs</label></p>
-                  <input id="dd-input-epochs" name="dd-input-epochs" type="number" value="8" min="1" max="100" />
+                  <span class="tooltip">
+                    <input id="dd-input-epochs" name="dd-input-epochs" type="number" value="8" min="1" max="100" />
+                    <span class="tooltiptext">The number of epochs to run.</span>
+                  </span>
                 </div>
                 <div class="field">
                   <p><label for="dd-input-iterations">Iterations</label></p>
-                  <input id="dd-input-iterations" name="dd-input-iterations" type="number" value="1050" min="50" max="2100" step="50" />
+                  <span class="tooltip">
+                    <input id="dd-input-iterations" name="dd-input-iterations" type="number" value="1050" min="50" max="2100" step="50" />
+                    <span class="tooltiptext">The number of times to calculate and backpropagate loss in a given epoch.</span>
+                  </span>
                 </div>
               </div>
               <div class="field">
-                <p><label for="dd-input-image_width">Image width</label></p>
-                <input id="dd-input-image_width" name="dd-input-image_width" type="number" value="256" min="16" max="1096" step="16" />
+                <p><label for="dd-input-save_every">Save every</label></p>
+                <span class="tooltip">
+                  <input id="dd-input-save_every" name="dd-input-save_every" type="number" value="100" min="10" max="2100" step="10" />
+                  <span class="tooltiptext">Generate an image every time iterations is a multiple of this number.</span>
+                </span>
               </div>
               <div class="field">
-                <p><label for="dd-input-save_every">Save every</label></p>
-                <input id="dd-input-save_every" name="dd-input-save_every" type="number" value="100" min="10" max="2100" step="10" />
+                <p><label for="dd-input-image_width">Image resolution</label></p>
+                <input id="dd-input-image_width" name="dd-input-image_width" type="number" value="256" min="16" max="1096" step="16" />
               </div>
               <div class="flex">
                 <div class="field mr-3">
@@ -122,17 +132,26 @@
                   </div>
                   <div class="field">
                     <p><label for="dd-input-num-layers">Number of layers</label></p>
-                    <input id="dd-input-num-layers" name="dd-input-num-layers" type="number" value="16" min="12" max="44" step="4" />
+                    <span class="tooltip">
+                      <input id="dd-input-num-layers" name="dd-input-num-layers" type="number" value="16" min="12" max="44" step="4" />
+                      <span class="tooltiptext">The number of hidden layers to use in the Siren neural net.</span>
+                    </span>
                   </div>
                 </div>
                 <div class="flex">
                   <div class="field mr-3">
-                    <p><label for="dd-input-layer-size">Layer size</label></p>
-                    <input id="dd-input-layer-size" name="dd-input-layer-size" type="number" value="256" min="256" max="512" step="64" />
+                    <p><label for="dd-input-layer-size">Hidden size</label></p>
+                    <span class="tooltip">                    
+                      <input id="dd-input-layer-size" name="dd-input-layer-size" type="number" value="256" min="256" max="512" step="64" />
+                      <span class="tooltiptext">The hidden layer size of the Siren net.</span>
+                    </span>
                   </div>
                   <div class="field">
                     <p><label for="dd-input-batch-size">Batch size</label></p>
-                    <input id="dd-input-batch-size" name="dd-input-batch-size" type="number" value="4" min="4" max="64" step="4" />
+                    <span class="tooltip">
+                      <input id="dd-input-batch-size" name="dd-input-batch-size" type="number" value="4" min="4" max="64" step="4" />
+                      <span class="tooltiptext">The number of generated images to pass into Siren before calculating loss.</span>
+                    </span>
                   </div>
                 </div>
                 <div class="field">

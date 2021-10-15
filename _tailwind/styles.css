@@ -163,6 +163,25 @@
     .container-warning {
         @apply text-white bg-gradient-to-t from-red to-lightred rounded-md shadow;
     }
+    .tooltip {
+        @apply relative;
+    }
+    .tooltip .tooltiptext {
+        @apply invisible text-white bg-gray-700 text-center rounded-md absolute z-10 opacity-0 w-36 p-1 -ml-14;
+        bottom: 150%;
+        left: 50%;
+        transition: opacity 0.3s;
+    }
+    .tooltip .tooltiptext::after {
+        @apply absolute top-full border-solid left-1/2;
+        content: "";
+        margin-left: -5px;
+        border-width: 5px;
+        border-color: #555 transparent transparent transparent;
+    }
+    .tooltip:hover .tooltiptext {
+        @apply visible opacity-100;
+    }
 }
 
 @layer utilities {
