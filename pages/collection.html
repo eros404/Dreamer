@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/styles.css">
+    <title>Dreamer</title>
+  </head>
+  <body class="text-navy scroll-smooth font-open dark:bg-black dark:bg-opacity-95 dark:text-gray-50">
+    <main class="p-4 my-0 mx-auto max-w-3xl">
+      <header class="mb-4 h-20">
+        <img class="mx-auto h-full" src="../images/icon.png">
+      </header>
+      <p id="output-directory-warning" class="text-red font-bold">Please select a valid path where Dreamer can create his output directory.</p>
+      <div class="flex justify-between container-accent pl-3">
+        <p class="my-2">Output path: <code id="dreamer-output-path" class="font-bold"></code></p>
+        <button id="choose-dreamer-output-path">Choose...</button>
+      </div>
+      <h1>Dream collection</h1>
+      <small class="text-sm text-gray-500">by Eros404</small>
+    </main>
+  </body>
+  <script src="../contents/jquery-3.6.0.min.js"></script>
+  <script src="../scripts/common.js"></script>
+  <script src="../scripts/collection.js"></script>
+</html>

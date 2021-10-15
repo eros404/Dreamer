@@ -5,6 +5,7 @@ const sizeOf = require('image-size')
 function walkFolder(rootFolder) {
     const files = fs.readdirSync()
     let result = new Object()
+    result.path = rootFolder
     result.images = []
     result.folders = []
     for (const file of files) {
@@ -17,6 +18,7 @@ function walkFolder(rootFolder) {
             const dimensions = sizeOf(pathToFile)
             result.images.push({
                 rootDir: rootFolder,
+                filePath: pathToFile,
                 fileName: file,
                 stat: stat,
                 dimensions: dimensions
