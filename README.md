@@ -4,6 +4,10 @@ UI Interface built with Electron to use DeepDaze and VQGAN-CLIP
 
 **[WORK IN PROGRESS]**
 
+## Download
+
+- [Pre-release v0.1.0](https://github.com/eros404/Dreamer/releases/download/v0.1.0/dreamer-win32-x64.zip)
+
 ## Deep Daze
 
 Deep Daze is a simple command line tool for text to image generation using OpenAI's [CLIP](https://github.com/openai/CLIP) [Siren](https://arxiv.org/abs/2006.09661).
