@@ -3,20 +3,21 @@ const fs = require('fs')
 const sizeOf = require('image-size')
 
 function walkFolder(rootFolder) {
-    const files = fs.readdirSync()
-    let result = new Object()
-    result.path = rootFolder
-    result.images = []
-    result.folders = []
+    const files = fs.readdirSync(rootFolder)
+    let folder = new Object()
+    folder.name = path.basename(rootFolder)
+    folder.path = rootFolder
+    folder.images = []
+    folder.folders = []
     for (const file of files) {
         const pathToFile = path.join(rootFolder, file)
-        const stat = fs.statSync(rootFolder)
+        const stat = fs.statSync(pathToFile)
         const isDirectory = stat.isDirectory()
         if (isDirectory) {
-            result.folders.push(walkFolder(pathToFile))
+            folder.folders.push(walkFolder(pathToFile))
         } else if (file.match(/(\.png|\.jpg)$/)) {
             const dimensions = sizeOf(pathToFile)
-            result.images.push({
+            folder.images.push({
                 rootDir: rootFolder,
                 filePath: pathToFile,
                 fileName: file,
@@ -25,7 +26,7 @@ function walkFolder(rootFolder) {
             })
         }
     }
-    return result
+    return folder
 }
 
 module.exports = {

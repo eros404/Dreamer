@@ -661,8 +661,8 @@ video {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  margin-top: 1rem;
-  margin-bottom: 0.25rem;
+  padding-top: 1rem;
+  padding-bottom: 0.25rem;
   font-weight: 700;
 }
 
@@ -1064,9 +1064,9 @@ figcaption {
 .container-warning {
   border-radius: 0.375rem;
   background-image: linear-gradient(to top, var(--tw-gradient-stops));
-  --tw-gradient-from: #B30000;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(179, 0, 0, 0));
-  --tw-gradient-to: #E60000;
+  --tw-gradient-from: #E60000;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(230, 0, 0, 0));
+  --tw-gradient-to: #B30000;
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity));
   --tw-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -1110,6 +1110,18 @@ figcaption {
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
+}
+
+.accordion:after {
+  content: '\02795';
+  float: right;
+  margin-left: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.accordion.active:after {
+  content: '\2796';
 }
 
 .sr-only {

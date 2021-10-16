@@ -41,7 +41,7 @@
     }
 
     h1, h2, h3, h4, h5, h6 {
-        @apply mt-4 mb-1 font-bold;
+        @apply pt-4 pb-1 font-bold;
     }
     h1, h2 {
         @apply border-gray-200 border-b dark:border-gray-700;
@@ -161,7 +161,7 @@
         @apply bg-gradient-to-t from-gray-300 to-gray-200 rounded-md shadow dark:from-gray-800 dark:to-gray-800;
     }
     .container-warning {
-        @apply text-white bg-gradient-to-t from-red to-lightred rounded-md shadow;
+        @apply text-white bg-gradient-to-t from-lightred to-red rounded-md shadow;
     }
     .tooltip {
         @apply relative;
@@ -181,6 +181,13 @@
     }
     .tooltip:hover .tooltiptext {
         @apply visible opacity-100;
+    }
+    .accordion:after {
+        content: '\02795';
+        @apply text-sm float-right ml-1;
+    }
+    .accordion.active:after {
+        content: '\2796';
     }
 }
 

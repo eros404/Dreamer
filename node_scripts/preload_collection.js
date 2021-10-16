@@ -5,14 +5,9 @@ contextBridge.exposeInMainWorld(
         send: (channel, data) => {
             // whitelist channels
             let validChannels = [
-                "exec-deepdaze",
-                "cancel-current-process",
-                "file-dialog", 
-                "ask-deepdaze-installed",
-                "install-deepdaze",
+                "ask-output-file-tree",
                 "ask-user-files-path",
-                "change-user-files-path",
-                "open-image-collection"
+                "change-user-files-path"
             ]
             if (validChannels.includes(channel)) {
                 ipcRenderer.send(channel, data)
@@ -20,11 +15,7 @@ contextBridge.exposeInMainWorld(
         },
         receive: (channel, func) => {
             let validChannels = [
-                "process-response",
-                "deepdaze-close",
-                "file-dialog-response",
-                "deepdaze-installed-response",
-                "install-deepdaze-close",
+                "output-file-tree-response",
                 "user-files-path-response"
             ]
             if (validChannels.includes(channel)) {

@@ -143,6 +143,37 @@ app.on('window-all-closed', function () {
     }
 })
 
+let collectionWindow
+ipcMain.on("open-image-collection", (event, args) => {
+    collectionWindow = new BrowserWindow({
+        width: 900,
+        height: 1000,
+        icon: path.join(__dirname, 'images', 'icon.png'),
+        webPreferences: {
+            nodeIntegration: false, // is default value after Electron v5
+            contextIsolation: true, // protect against prototype pollution
+            enableRemoteModule: false, // turn off remote
+            preload: path.join(__dirname, 'node_scripts', 'preload_collection.js')
+        }
+    })
+    windows.add(collectionWindow)
+    collectionWindow.on("closed", () => {
+        windows.delete(collectionWindow)
+        collectionWindow = null
+    })
+
+    collectionWindow.loadFile(path.join(__dirname, './pages/collection.html'))
+
+    collectionWindow.webContents.setWindowOpenHandler(({url}) => {
+        shell.openExternal(url);
+        return { action: 'deny' }
+    })
+})
+
+ipcMain.on("ask-output-file-tree", (event, args) => {
+    collectionWindow.webContents.send("output-file-tree-response", fe.walkFolder(store.getUserImagesPath()))
+})
+
 ipcMain.on("ask-user-files-path", (event, args) => {
     var path = store.getUserImagesPath()
     var isValid = true
@@ -180,7 +211,3 @@ ipcMain.on("change-user-files-path", (event, args) => {
         }
     })
 })
-
-// ipcMain.on("ask-outputFileTree", (event, tree) => {
-//     mainWindow.webContents.send("outputFileTree-response", fe.walkFolder(store.getUserImagesPath()))
-// })
