@@ -7,7 +7,6 @@ window.api.receive("file-dialog-response", (filePath) => {
     $("#dd-selected-image").attr("src", filePath)
     $("#dd-selected-image").show()
     $("#dd-image-cancel").show()
-    console.log("top")
 })
 window.api.receive("process-response", (data) => {
     if (data && data.output) {

@@ -9,9 +9,10 @@ const fe = require("./node_scripts/file_explorer.js")
 
 
 let windows = new Set()
+let mainWindow
 let currentProcess
 function createWindow () {
-    var mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
     width: 900,
     height: 1000,
     icon: path.join(__dirname, 'images', 'icon.png'),
@@ -36,91 +37,91 @@ function createWindow () {
         shell.openExternal(url);
         return { action: 'deny' }
     });
+}
 
-    function sendProcessResponse(data, imageDirectoryPath) {
-        mainWindow.webContents.send('process-response', { output: data, imageDirectoryPath: path.join(imageDirectoryPath, "__IMAGENAME__") })
-    }
-    ipcMain.on("exec-deepdaze", (event, scenario) => {
-        if (!currentProcess || currentProcess.killed) {
-            var imageDirectoryPath = path.join(store.getUserImagesPath(), 'deepdaze', scenario.directoryName)
-            currentProcess = deepdaze.spawnDeepdaze(scenario, imageDirectoryPath)
+function sendProcessResponse(data, imageDirectoryPath) {
+    mainWindow.webContents.send('process-response', { output: data, imageDirectoryPath: path.join(imageDirectoryPath, "__IMAGENAME__") })
+}
+ipcMain.on("exec-deepdaze", (event, scenario) => {
+    if (!currentProcess || currentProcess.killed) {
+        var imageDirectoryPath = path.join(store.getUserImagesPath(), 'deepdaze', scenario.directoryName)
+        currentProcess = deepdaze.spawnDeepdaze(scenario, imageDirectoryPath)
 
-            currentProcess.on('error', (error) => {
-                dialog.showMessageBox({
-                    title: 'Error',
-                    type: 'warning',
-                    message: 'Error occured.\r\n' + error
-                })
-            })
-
-            currentProcess.stdout.setEncoding('utf8');
-            currentProcess.stdout.on('data', (data) => sendProcessResponse(data.toString(), imageDirectoryPath))
-
-            currentProcess.stderr.setEncoding('utf8');
-            currentProcess.stderr.on('data', (data) => sendProcessResponse(data, imageDirectoryPath))
-
-            currentProcess.on('close', (code) => {  
-                mainWindow.webContents.send('deepdaze-close', code)
-                currentProcess = null
-            })
-        } else {
-            dialog.showMessageBox({
-                title: 'Error',
-                type: 'warning',
-                message: 'A process is already launched.'
-            })
-        }
-    })
-    ipcMain.on("cancel-current-process", (event, args) => {
-        if (!currentProcess.killed) {
-            dialog.showMessageBox(mainWindow, {
-                title: 'Kill process',
-                type: 'question',
-                message: 'Do you really want to cancel the generation ?',
-                buttons: ['Yes', 'No'],
-                defaultId: 1
-            }).then(promise => {
-                if (promise.response == 0) {
-                    currentProcess.kill()
-                }
-            })
-        }
-    })
-    ipcMain.on("ask-deepdaze-installed", (event, args) => {
-        var child = deepdaze.spawnDeepdazeInstalled()
-        child.on('error', (error) => {})
-        child.on('close', (code) => {  
-            mainWindow.webContents.send("deepdaze-installed-response", code)
-        })
-    })
-    ipcMain.on("install-deepdaze", (event, args) => {
-        var child = pipInstall.installDeepdaze()
-        child.on('error', (error) => {
+        currentProcess.on('error', (error) => {
             dialog.showMessageBox({
                 title: 'Error',
                 type: 'warning',
                 message: 'Error occured.\r\n' + error
             })
         })
-        child.stdout.setEncoding('utf8');
-        child.stdout.on('data', (data) => sendProcessResponse(data.toString()))
-        child.stderr.setEncoding('utf8');
-        child.stderr.on('data', (data) => sendProcessResponse(data))
-        child.on('close', (code) => {  
-            mainWindow.webContents.send('install-deepdaze-close', code)
+
+        currentProcess.stdout.setEncoding('utf8');
+        currentProcess.stdout.on('data', (data) => sendProcessResponse(data.toString(), imageDirectoryPath))
+
+        currentProcess.stderr.setEncoding('utf8');
+        currentProcess.stderr.on('data', (data) => sendProcessResponse(data, imageDirectoryPath))
+
+        currentProcess.on('close', (code) => {  
+            mainWindow.webContents.send('deepdaze-close', code)
+            currentProcess = null
         })
-    })
-    ipcMain.on("file-dialog", (event, args) => {
-        dialog.showOpenDialog(mainWindow, {
-            filters: [{ name : 'Images', extensions: ['jpg', 'png'] }],
-            properties: ["openFile"]
-        }).then(result => {
-            if (!result.canceled) {
-                mainWindow.webContents.send("file-dialog-response", result.filePaths[0])
+    } else {
+        dialog.showMessageBox({
+            title: 'Error',
+            type: 'warning',
+            message: 'A process is already launched.'
+        })
+    }
+})
+ipcMain.on("cancel-current-process", (event, args) => {
+    if (!currentProcess.killed) {
+        dialog.showMessageBox(mainWindow, {
+            title: 'Kill process',
+            type: 'question',
+            message: 'Do you really want to cancel the generation ?',
+            buttons: ['Yes', 'No'],
+            defaultId: 1
+        }).then(promise => {
+            if (promise.response == 0) {
+                currentProcess.kill()
             }
         })
+    }
+})
+ipcMain.on("ask-deepdaze-installed", (event, args) => {
+    var child = deepdaze.spawnDeepdazeInstalled()
+    child.on('error', (error) => {})
+    child.on('close', (code) => {  
+        mainWindow.webContents.send("deepdaze-installed-response", code)
     })
-}
+})
+ipcMain.on("install-deepdaze", (event, args) => {
+    var child = pipInstall.installDeepdaze()
+    child.on('error', (error) => {
+        dialog.showMessageBox({
+            title: 'Error',
+            type: 'warning',
+            message: 'Error occured.\r\n' + error
+        })
+    })
+    child.stdout.setEncoding('utf8');
+    child.stdout.on('data', (data) => sendProcessResponse(data.toString()))
+    child.stderr.setEncoding('utf8');
+    child.stderr.on('data', (data) => sendProcessResponse(data))
+    child.on('close', (code) => {  
+        mainWindow.webContents.send('install-deepdaze-close', code)
+    })
+})
+ipcMain.on("file-dialog", (event, args) => {
+    dialog.showOpenDialog(mainWindow, {
+        filters: [{ name : 'Images', extensions: ['jpg', 'png'] }],
+        properties: ["openFile"]
+    }).then(result => {
+        if (!result.canceled) {
+            mainWindow.webContents.send("file-dialog-response", result.filePaths[0])
+        }
+    })
+})
 // Cette méthode sera appelée quand Electron aura fini
 // de s'initialiser et sera prêt à créer des fenêtres de navigation.
 // Certaines APIs peuvent être utilisées uniquement quant cet événement est émit.

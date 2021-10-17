@@ -169,7 +169,7 @@
     .tooltip .tooltiptext {
         @apply invisible text-white bg-gray-700 text-center rounded-md absolute z-10 opacity-0 w-36 p-1 -ml-14;
         bottom: 150%;
-        left: 50%;
+        left: 25%;
         transition: opacity 0.3s;
     }
     .tooltip .tooltiptext::after {
