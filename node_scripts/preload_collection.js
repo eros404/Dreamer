@@ -7,7 +7,9 @@ contextBridge.exposeInMainWorld(
             let validChannels = [
                 "ask-output-file-tree",
                 "ask-user-files-path",
-                "change-user-files-path"
+                "change-user-files-path",
+                "delete-folder",
+                "delete-image"
             ]
             if (validChannels.includes(channel)) {
                 ipcRenderer.send(channel, data)
@@ -16,7 +18,8 @@ contextBridge.exposeInMainWorld(
         receive: (channel, func) => {
             let validChannels = [
                 "output-file-tree-response",
-                "user-files-path-response"
+                "user-files-path-response",
+                "element-deleted"
             ]
             if (validChannels.includes(channel)) {
                 // Deliberately strip event as it includes `sender` 

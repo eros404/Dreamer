@@ -20,18 +20,36 @@
         <button id="choose-dreamer-output-path">Choose...</button>
       </div>
       <h1>Dream collection</h1>
-      <div id="collection">
-
+      <div id="collection-container">
+        <select name="generator" id="generator_input" class="btn-primary w-full text-lg p-3">
+          <option value="deepdaze">Deep Daze</option>
+        </select>
+        <div id="collection" class="container-accent p-3">
+        </div>
       </div>
 
       <template id="dir-template">
-        <div class="dir container-accent cursor-pointer">
-          <button class="accordion dir-name w-full text-left"></button>
-          <div class="accordion-panel dir-content pl-6"></div>
+        <div class="dir container-accent m-2">
+          <div class="small flex justify-between">
+            <span class="dir-datetime"></span>
+            <span class="hover:text-red underline dir-delete cursor-pointer">Delete</span>
+          </div>
+          <button class="accordion dir-name w-full text-left truncate"></button>
+          <div class="accordion-panel dir-content py-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
         </div>
       </template>
 
-      <small class="text-sm text-gray-500">by Eros404</small>
+      <template id="image-template">
+        <div class="image-container">
+          <div class="small flex justify-between">
+            <span class="image-dimensions"></span>
+            <span class="image-delete hover:text-red cursor-pointer">&#10008;</span>
+          </div>
+          <img class="rounded shadow image m-auto" />
+        </div>
+      </template>
+
+      <small class="small">by Eros404</small>
     </main>
   </body>
   <script src="../contents/jquery-3.6.0.min.js"></script>

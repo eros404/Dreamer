@@ -171,8 +171,8 @@ ipcMain.on("open-image-collection", (event, args) => {
     })
 })
 
-ipcMain.on("ask-output-file-tree", (event, args) => {
-    collectionWindow.webContents.send("output-file-tree-response", fe.walkFolder(store.getUserImagesPath()))
+ipcMain.on("ask-output-file-tree", (event, folder) => {
+    collectionWindow.webContents.send("output-file-tree-response", fe.walkFolder(path.join(store.getUserImagesPath(), folder)))
 })
 
 ipcMain.on("ask-user-files-path", (event, args) => {
@@ -211,4 +211,31 @@ ipcMain.on("change-user-files-path", (event, args) => {
             })
         }
     })
+})
+function deleteContent(path, type) {
+    fs.access(path, error => {
+        if (!error) {
+            dialog.showMessageBox(collectionWindow, {
+                title: 'Delete content',
+                type: 'question',
+                message: type == "folder" ? 'Do you really want to delete this folder and all his content ?' : 'Do you really want to delete this image ?',
+                buttons: ['Yes', 'No'],
+                defaultId: 1
+            }).then(promise => {
+                if (promise.response == 0) {
+                    fs.rm(path, {recursive: (type == "folder")}, (err) => {
+                        if (!err) {
+                            collectionWindow.webContents.send("element-deleted", path)
+                        }
+                    })
+                }
+            })
+        }
+    })
+}
+ipcMain.on("delete-folder", (event, path) => {
+    deleteContent(path, "folder")
+})
+ipcMain.on("delete-image", (event, path) => {
+    deleteContent(path, "file")
 })
