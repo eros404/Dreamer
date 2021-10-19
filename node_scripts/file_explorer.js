@@ -35,7 +35,7 @@ function getFolderImages(folder) {
     for (const file of files) {
         const filePath = path.join(folder, file)
         const stat = fs.statSync(filePath)
-        if (stat.isFile() && file.match(/(\.png|\.jpg)$/)) {
+        if (stat.isFile() && file.match(/(\.png|\.jpg|\.gif)$/)) {
             images.push({
                 name: file,
                 path: filePath,
