@@ -65,8 +65,11 @@
         @apply text-h6 text-gray-700 dark:text-gray-100;
     }
 
-    p, form {
+    p {
         @apply mt-4 mb-1;
+    }
+    form {
+        @apply mt-2 mb-1;
     }
     input {
         @apply px-2 py-1 rounded-md border border-gray-300 shadow dark:border-gray-800 dark:bg-gray-900;
@@ -187,6 +190,24 @@
     }
     .accordion.active:after {
         content: '\2796';
+    }
+    .modal {
+        @apply fixed left-0 top-0 w-full h-full overflow-auto;
+        z-index: 1; /* Sit on top */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+    .modal-content {
+        @apply p-5 w-4/5;
+        margin: 15% auto; /* 15% from the top and centered */
+    }
+    .close {
+        @apply float-right text-gray-600 text-2xl font-bold;
+    }
+      
+    .close:hover,
+    .close:focus {
+        @apply text-black dark:text-gray-50 cursor-pointer;
     }
 }
 

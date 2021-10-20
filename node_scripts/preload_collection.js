@@ -9,7 +9,10 @@ contextBridge.exposeInMainWorld(
                 "ask-user-files-path",
                 "change-user-files-path",
                 "delete-folder",
-                "delete-image"
+                "delete-image",
+                "exec-realsr",
+                "ask-image-info",
+                "shell-open-path"
             ]
             if (validChannels.includes(channel)) {
                 ipcRenderer.send(channel, data)
@@ -19,7 +22,10 @@ contextBridge.exposeInMainWorld(
             let validChannels = [
                 "output-file-tree-response",
                 "user-files-path-response",
-                "element-deleted"
+                "element-deleted",
+                "process-response",
+                "exec-realsr-close",
+                "image-info-response"
             ]
             if (validChannels.includes(channel)) {
                 // Deliberately strip event as it includes `sender` 

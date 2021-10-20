@@ -6,6 +6,7 @@ const deepdaze = require("./node_scripts/deepdaze.js")
 const store = require("./node_scripts/store.js")
 const pipInstall = require("./node_scripts/pip_install.js")
 const fe = require("./node_scripts/file_explorer.js")
+const realsr = require("./node_scripts/realsr.js")
 
 
 let windows = new Set()
@@ -38,9 +39,33 @@ function createWindow () {
         return { action: 'deny' }
     });
 }
+// Cette méthode sera appelée quand Electron aura fini
+// de s'initialiser et sera prêt à créer des fenêtres de navigation.
+// Certaines APIs peuvent être utilisées uniquement quant cet événement est émit.
+app.whenReady().then(() => {
+    createWindow()
+  
+    app.on('activate', function () {
+      // Sur macOS il est d'usage de recréer une fenêtre dans l'application quand
+      // l'icône du dock est cliquée et qu'il n'y a pas d'autre fenêtre ouverte.
+      if (windows.size === 0) createWindow()
+    })
+})
+  
+// Quitter quand toutes les fenêtres sont fermées, sauf sur macOS. Sur macOS, il est courant
+// pour les applications et leur barre de menu de rester actives jusqu’à ce que l’utilisateur quitte
+// explicitement avec Cmd + Q.
+app.on('window-all-closed', function () {
+    if (process.platform !== 'darwin') {
+        app.quit()
+    }
+})
 
-function sendProcessResponse(data, imageDirectoryPath) {
+function sendImageProcessResponse(data, imageDirectoryPath) {
     mainWindow.webContents.send('process-response', { output: data, imageDirectoryPath: path.join(imageDirectoryPath, "__IMAGENAME__") })
+}
+function sendProcessResponse(window, data) {
+    window.webContents.send('process-response', { output: data })
 }
 ipcMain.on("exec-deepdaze", (event, scenario) => {
     if (!currentProcess || currentProcess.killed) {
@@ -56,10 +81,10 @@ ipcMain.on("exec-deepdaze", (event, scenario) => {
         })
 
         currentProcess.stdout.setEncoding('utf8');
-        currentProcess.stdout.on('data', (data) => sendProcessResponse(data.toString(), imageDirectoryPath))
+        currentProcess.stdout.on('data', (data) => sendImageProcessResponse(data.toString(), imageDirectoryPath))
 
         currentProcess.stderr.setEncoding('utf8');
-        currentProcess.stderr.on('data', (data) => sendProcessResponse(data, imageDirectoryPath))
+        currentProcess.stderr.on('data', (data) => sendImageProcessResponse(data, imageDirectoryPath))
 
         currentProcess.on('close', (code) => {  
             mainWindow.webContents.send('deepdaze-close', code)
@@ -105,9 +130,9 @@ ipcMain.on("install-deepdaze", (event, args) => {
         })
     })
     child.stdout.setEncoding('utf8');
-    child.stdout.on('data', (data) => sendProcessResponse(data.toString()))
+    child.stdout.on('data', (data) => sendProcessResponse(mainWindow, data.toString()))
     child.stderr.setEncoding('utf8');
-    child.stderr.on('data', (data) => sendProcessResponse(data))
+    child.stderr.on('data', (data) => sendProcessResponse(mainWindow, data))
     child.on('close', (code) => {  
         mainWindow.webContents.send('install-deepdaze-close', code)
     })
@@ -121,27 +146,6 @@ ipcMain.on("file-dialog", (event, args) => {
             mainWindow.webContents.send("file-dialog-response", result.filePaths[0])
         }
     })
-})
-// Cette méthode sera appelée quand Electron aura fini
-// de s'initialiser et sera prêt à créer des fenêtres de navigation.
-// Certaines APIs peuvent être utilisées uniquement quant cet événement est émit.
-app.whenReady().then(() => {
-    createWindow()
-  
-    app.on('activate', function () {
-      // Sur macOS il est d'usage de recréer une fenêtre dans l'application quand
-      // l'icône du dock est cliquée et qu'il n'y a pas d'autre fenêtre ouverte.
-      if (windows.size === 0) createWindow()
-    })
-})
-  
-// Quitter quand toutes les fenêtres sont fermées, sauf sur macOS. Sur macOS, il est courant
-// pour les applications et leur barre de menu de rester actives jusqu’à ce que l’utilisateur quitte
-// explicitement avec Cmd + Q.
-app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
 })
 
 let collectionWindow
@@ -238,4 +242,27 @@ ipcMain.on("delete-folder", (event, path) => {
 })
 ipcMain.on("delete-image", (event, path) => {
     deleteContent(path, "file")
+})
+ipcMain.on("exec-realsr", (event, scenario) => {
+    var process = realsr.spawnRealsr(scenario, path.join(__dirname, "contents"))
+    process.on('error', (error) => {
+        dialog.showMessageBox({
+            title: 'Error',
+            type: 'warning',
+            message: 'Error occured.\r\n' + error
+        })
+    })
+    process.stdout.setEncoding('utf8');
+    process.stdout.on('data', (data) => sendProcessResponse(collectionWindow, data.toString()))
+    process.stderr.setEncoding('utf8');
+    process.stderr.on('data', (data) => sendProcessResponse(collectionWindow, data))
+    process.on('close', (code) => {  
+        collectionWindow.webContents.send('exec-realsr-close', code)
+    })
+})
+ipcMain.on("ask-image-info", (event, imagePath) => {
+    collectionWindow.webContents.send('image-info-response', fe.getImageInfos(imagePath))
+})
+ipcMain.on("shell-open-path", (event, filePath) => {
+    shell.openPath(filePath)
 })

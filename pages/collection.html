@@ -32,7 +32,10 @@
         <div class="dir container-accent m-2">
           <div class="small flex justify-between">
             <span class="dir-datetime"></span>
-            <span class="hover:text-red underline dir-delete cursor-pointer">Delete</span>
+            <div>
+              <span class="hover:text-green underline dir-open cursor-pointer mr-1">Open</span>
+              <span class="hover:text-red underline dir-delete cursor-pointer">Delete</span>
+            </div>
           </div>
           <button class="accordion dir-name w-full text-left truncate"></button>
           <div class="accordion-panel dir-content py-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
@@ -42,17 +45,52 @@
       <template id="image-template">
         <div class="image-container">
           <div class="small flex justify-between">
-            <span class="image-dimensions"></span>
+            <span class="image-size"></span>
             <span class="image-delete hover:text-red cursor-pointer">&#10006;</span>
           </div>
-          <img class="rounded shadow image m-auto" />
+          <img class="rounded shadow image m-auto max-w-full cursor-pointer" />
+          <div class="small text-center justify-between">
+            <span class="image-dimensions"></span>
+          </div>
         </div>
       </template>
+
+      <div id="realsr-modal" class="modal">
+        <div class="modal-content container-accent">
+          <span class="close realsr-modal-close">&times;</span>
+          <h2>Upscaling</h2>
+          <p>If you encounter crash or error, try to upgrade your GPU driver</p>
+          <ul>
+            <li><a target="_blank" href="https://downloadcenter.intel.com/product/80939/Graphics-Drivers">Intel</a></li>
+            <li><a target="_blank" href="https://www.amd.com/en/support">AMD</a></li>
+            <li><a target="_blank" href="https://www.nvidia.com/Download/index.aspx">NVIDIA</a></li>
+          </ul>
+          <hr>
+          <div class="md:flex">
+            <div>
+              <img id="realsr-image" src="" class="rounded shadow w-40 h-auto md:mr-3">
+            </div>
+            <form id="realsr-form">
+              <div class="field">
+                <input id="realsr-input-overwrite" name="realsr-input-overwrite" type="checkbox">
+                <label for="realsr-input-overwrite">Overwrite original image</label>
+              </div>
+              <div class="field">
+                <input id="realsr-input-tta" name="realsr-input-tta" type="checkbox">
+                <label for="realsr-input-tta">Enable TTA (test-time augmentation) mode</label>
+              </div>
+              <input id="realsr-submit" type="submit" value="Upscale" class="btn-primary">
+            </form>
+          </div>
+          <p id="console" class="bg-gray-800 text-white min-h-1.75 w-full rounded-md shadow px-2 py-1 font-mono"></p>
+        </div>
+      </div>
 
       <small class="small">by Eros404</small>
     </main>
   </body>
   <script src="../contents/jquery-3.6.0.min.js"></script>
+  <script src="../scripts/scenarios.js"></script>
   <script src="../scripts/common.js"></script>
   <script src="../scripts/collection.js"></script>
 </html>

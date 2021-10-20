@@ -18,3 +18,12 @@ class DeepdazeScenario {
         this.directoryName = (new Date().toISOString().replaceAll(/[TZ]/g, "_") + "_" + this.text).replace(/[^a-z0-9_\-]/gi, "_").toLowerCase().replace(/_{2,}/g, '_')
     }
 }
+
+class RealsrScenario {
+    constructor(inputPath, overwriteOriginal, enableTTA) {
+        this.inputPath = inputPath,
+        this.overwriteOriginal = overwriteOriginal,
+        this.enableTTA = enableTTA,
+        this.outputPath = this.overwriteOriginal ? this.inputPath : this.inputPath.slice(0, (this.inputPath.length - this.inputPath.match(/\.[a-zA-Z]+$/)[0].length)) + "_x4" + (this.enableTTA ? "tta" : "") + this.inputPath.slice((this.inputPath.length - this.inputPath.match(/\.[a-zA-Z]+$/)[0].length))
+    }
+}
