@@ -1,6 +1,6 @@
 {
   "name": "dreamer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "UI Interface built with Electron to use DeepDaze and VQGAN-CLIP",
   "main": "main.js",
   "scripts": {
@@ -40,7 +40,9 @@
   },
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "./images/icon.ico"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-zip"
@@ -52,10 +54,6 @@
               "maintainer": "Eros404"
             }
           }
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
         }
       ]
     }
