@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "tailwind:watch": "npx tailwindcss -i ./_tailwind/styles.css -o ./css/styles.css --watch",
+    "tailwind:prod": "npx tailwindcss -i ./_tailwind/styles.css -o ./css/styles.css NODE_ENV=production",
     "tailwind": "npx tailwindcss -i ./_tailwind/styles.css -o ./css/styles.css",
     "start": "electron-forge start",
     "package": "electron-forge package",

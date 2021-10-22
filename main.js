@@ -252,9 +252,9 @@ ipcMain.on("exec-realsr", (event, scenario) => {
             message: 'Error occured.\r\n' + error
         })
     })
-    process.stdout.setEncoding('utf8');
+    process.stdout.setEncoding('utf8')
     process.stdout.on('data', (data) => sendProcessResponse(collectionWindow, data.toString()))
-    process.stderr.setEncoding('utf8');
+    process.stderr.setEncoding('utf8')
     process.stderr.on('data', (data) => sendProcessResponse(collectionWindow, data))
     process.on('close', (code) => {  
         collectionWindow.webContents.send('exec-realsr-close', code)

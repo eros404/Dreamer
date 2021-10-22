@@ -2,17 +2,22 @@ let upscaledFileOutput
 
 $(document).ready(function() {
     $("#realsr-modal").hide()
-    $("#generator_input").on("change", () => {  
+    $("#image-modal").hide()
+    $("#generator_input").off("change").on("change", () => {  
         window.api.send("ask-output-file-tree", $("#generator_input").val())
     })
-    $(".realsr-modal-close").on("click", () => {
+    $(".realsr-modal-close").off("click").on("click", () => {
         $("#realsr-modal").hide()
     })
-    $("#realsr-form").on("submit", (e) => {
+    $(".image-modal-close").off("click").on("click", () => {
+        $("#image-modal").hide()
+    })
+    $("#realsr-form").off("submit").on("submit", (e) => {
         e.preventDefault()
         var scenario = new RealsrScenario(
             $("#realsr-image").attr("src"),
-            $("#realsr-input-overwrite").is(":checked"),
+            // $("#realsr-input-overwrite").is(":checked"),
+            false,
             $("#realsr-input-tta").is(":checked")
         )
         upscaledFileOutput = scenario.outputPath
@@ -33,13 +38,18 @@ function fillWithImages(container, images) {
         let imageElmt = newDiv.find(".image")
         imageElmt.attr("src", image.path)
         imageElmt.attr("title", image.name)
+        imageElmt.on("click", () => {
+            $("#modal-image-name").text(image.name)
+            $("#image-modal-image").attr("src", image.path)
+            $("#image-modal").show()
+        })
         if (image.path.match(/[\.jpg|\.png]$/)) {
-            imageElmt.on("click", () => {
+            newDiv.find(".open-realsr").on("click", () => {
                 $("#realsr-image").attr("src", image.path)
                 $("#realsr-modal").show()
             })
         } else {
-            imageElmt.removeClass("cursor-pointer")
+            newDiv.find(".open-realsr").hide()
         }
         newDiv.find(".image-delete").on("click", () => {
             window.api.send("delete-image", image.path)
@@ -88,8 +98,14 @@ window.api.receive("user-files-path-response", (response) => {
     }
 })
 
+let updateConsole = true
 window.api.receive("process-response", (data) => {
-    $("#console").text(data.output)
+    if (updateConsole) {
+        $("#console").text(data.output)
+    } else {
+        $("#console").text($("#console").text() + data.output)
+    }
+    updateConsole = data.output.includes("%")
 })
 window.api.receive("exec-realsr-close", (code) => {
     if (code == 0) {

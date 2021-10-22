@@ -1008,6 +1008,14 @@ figcaption {
   color: rgba(255, 255, 255, var(--tw-text-opacity));
 }
 
+.btn_primary-outline {
+  cursor: pointer;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(42, 157, 143, var(--tw-border-opacity));
+  font-weight: 700;
+}
+
 .container-accent {
   border-radius: 0.375rem;
   background-image: linear-gradient(to top, var(--tw-gradient-stops));
@@ -1135,19 +1143,18 @@ figcaption {
   left: 0px;
   height: 100%;
   width: 100%;
-  overflow: auto;
+  overflow: hidden;
   z-index: 1;
   /* Sit on top */
-  background-color: rgb(0,0,0);
-  /* Fallback color */
   background-color: rgba(0,0,0,0.4);
   /* Black w/ opacity */
 }
 
 .modal-content {
   width: 80%;
+  max-width: 48rem;
   padding: 1.25rem;
-  margin: 15% auto;
+  margin: 10% auto;
   /* 15% from the top and centered */
 }
 

@@ -157,6 +157,9 @@
     .btn-primary {
         @apply bg-green text-white cursor-pointer font-bold bg-gradient-to-t from-darkgreen to-green;
     }
+    .btn_primary-outline {
+        @apply cursor-pointer font-bold border border-green;
+    }
     .container-accent {
         @apply bg-gradient-to-t from-gray-200 to-gray-100 rounded-md shadow dark:from-gray-900 dark:to-gray-900;
     }
@@ -192,14 +195,13 @@
         content: '\2796';
     }
     .modal {
-        @apply fixed left-0 top-0 w-full h-full overflow-auto;
+        @apply fixed left-0 top-0 w-full h-full overflow-hidden;
         z-index: 1; /* Sit on top */
-        background-color: rgb(0,0,0); /* Fallback color */
         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
     }
     .modal-content {
-        @apply p-5 w-4/5;
-        margin: 15% auto; /* 15% from the top and centered */
+        @apply p-5 w-4/5 max-w-3xl;
+        margin: 10% auto; /* 15% from the top and centered */
     }
     .close {
         @apply float-right text-gray-600 text-2xl font-bold;
