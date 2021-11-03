@@ -1,54 +1,26 @@
-const { app, shell, ipcMain, dialog, BrowserWindow } = require('electron')
+const { app, shell, ipcMain, BrowserWindow } = require('electron')
 const path = require('path')
 const fs = require('fs')
 
-const deepdaze = require("./node_scripts/deepdaze.js")
-const store = require("./node_scripts/store.js")
-const pipInstall = require("./node_scripts/pip_install.js")
-const fe = require("./node_scripts/file_explorer.js")
-const realsr = require("./node_scripts/realsr.js")
+const deepdaze = require("./external_processes/deepdaze.js")
+const pipInstall = require("./external_processes/pip_install.js")
+const fe = require("./helpers/file_explorer.js")
+const realsr = require("./external_processes/realsr.js")
+const dialogHelper = require("./helpers/dialog_helper.js")
+const collecManager = require("./helpers/collection_manager.js")
+const winManager = require("./helpers/window_manager.js")
 
 
-let windows = new Set()
-let mainWindow
-let currentProcess
-function createWindow () {
-    mainWindow = new BrowserWindow({
-    width: 900,
-    height: 1000,
-    icon: path.join(__dirname, 'images', 'icon.png'),
-    webPreferences: {
-        nodeIntegration: false, // is default value after Electron v5
-        contextIsolation: true, // protect against prototype pollution
-        enableRemoteModule: false, // turn off remote
-        preload: path.join(__dirname, 'node_scripts', 'preload.js')
-        }
-    })
-    windows.add(mainWindow)
-    mainWindow.on("closed", () => {
-        windows.delete(mainWindow);
-        mainWindow = null;
-    });
-
-    mainWindow.loadFile(path.join(__dirname, './pages/deepdaze.html'))
-    // Ouvrir les outils de développement.
-    //mainWindow.webContents.openDevTools()
-
-    mainWindow.webContents.setWindowOpenHandler(({url}) => {
-        shell.openExternal(url);
-        return { action: 'deny' }
-    });
-}
 // Cette méthode sera appelée quand Electron aura fini
 // de s'initialiser et sera prêt à créer des fenêtres de navigation.
 // Certaines APIs peuvent être utilisées uniquement quant cet événement est émit.
 app.whenReady().then(() => {
-    createWindow()
+    winManager.createMainWindow()
   
     app.on('activate', function () {
       // Sur macOS il est d'usage de recréer une fenêtre dans l'application quand
       // l'icône du dock est cliquée et qu'il n'y a pas d'autre fenêtre ouverte.
-      if (windows.size === 0) createWindow()
+      if (winManager.windows.size === 0) createWindow()
     })
 })
   
@@ -61,208 +33,127 @@ app.on('window-all-closed', function () {
     }
 })
 
-function sendImageProcessResponse(data, imageDirectoryPath) {
-    mainWindow.webContents.send('process-response', { output: data, imageDirectoryPath: path.join(imageDirectoryPath, "__IMAGENAME__") })
-}
-function sendProcessResponse(window, data) {
-    window.webContents.send('process-response', { output: data })
-}
+let currentProcess
+
 ipcMain.on("exec-deepdaze", (event, scenario) => {
     if (!currentProcess || currentProcess.killed) {
-        var imageDirectoryPath = path.join(store.getUserImagesPath(), 'deepdaze', scenario.directoryName)
+        var imageDirectoryPath = path.join(collecManager.getPath(), 'deepdaze', scenario.directoryName)
         currentProcess = deepdaze.spawnDeepdaze(scenario, imageDirectoryPath)
 
         currentProcess.on('error', (error) => {
-            dialog.showMessageBox({
-                title: 'Error',
-                type: 'warning',
-                message: 'Error occured.\r\n' + error
-            })
+            dialogHelper.showError('Error occured.\r\n' + error)
         })
 
         currentProcess.stdout.setEncoding('utf8');
-        currentProcess.stdout.on('data', (data) => sendImageProcessResponse(data.toString(), imageDirectoryPath))
+        currentProcess.stdout.on('data', (data) => winManager.sendImageProcessResponse(data.toString(), imageDirectoryPath))
 
         currentProcess.stderr.setEncoding('utf8');
-        currentProcess.stderr.on('data', (data) => sendImageProcessResponse(data, imageDirectoryPath))
+        currentProcess.stderr.on('data', (data) => winManager.sendImageProcessResponse(data, imageDirectoryPath))
 
-        currentProcess.on('close', (code) => {  
-            mainWindow.webContents.send('deepdaze-close', code)
+        currentProcess.on('close', (code) => {
+            winManager.sendToMainWindow('deepdaze-close', code)
             currentProcess = null
         })
     } else {
-        dialog.showMessageBox({
-            title: 'Error',
-            type: 'warning',
-            message: 'A process is already launched.'
-        })
+        dialogHelper.showWarning('A process is already launched.')
     }
 })
+
 ipcMain.on("cancel-current-process", (event, args) => {
     if (!currentProcess.killed) {
-        dialog.showMessageBox(mainWindow, {
-            title: 'Kill process',
-            type: 'question',
-            message: 'Do you really want to cancel the generation ?',
-            buttons: ['Yes', 'No'],
-            defaultId: 1
-        }).then(promise => {
+        dialogHelper.askQuestion(winManager.mainWindow, 'Kill process', 'Do you really want to cancel the generation ?')
+        .then(promise => {
             if (promise.response == 0) {
                 currentProcess.kill()
             }
         })
     }
 })
+
 ipcMain.on("ask-deepdaze-installed", (event, args) => {
     var child = deepdaze.spawnDeepdazeInstalled()
     child.on('error', (error) => {})
     child.on('close', (code) => {  
-        mainWindow.webContents.send("deepdaze-installed-response", code)
+        winManager.sendToMainWindow("deepdaze-installed-response", code)
     })
 })
 ipcMain.on("install-deepdaze", (event, args) => {
     var child = pipInstall.installDeepdaze()
     child.on('error', (error) => {
-        dialog.showMessageBox({
-            title: 'Error',
-            type: 'warning',
-            message: 'Error occured.\r\n' + error
-        })
+        dialogHelper.showError('Error occured.\r\n' + error)
     })
     child.stdout.setEncoding('utf8');
-    child.stdout.on('data', (data) => sendProcessResponse(mainWindow, data.toString()))
+    child.stdout.on('data', (data) => winManager.sendProcessResponseToMainWindow(data.toString()))
     child.stderr.setEncoding('utf8');
-    child.stderr.on('data', (data) => sendProcessResponse(mainWindow, data))
+    child.stderr.on('data', (data) => winManager.sendProcessResponseToMainWindow(data))
     child.on('close', (code) => {  
-        mainWindow.webContents.send('install-deepdaze-close', code)
+        winManager.sendToMainWindow('install-deepdaze-close', code)
     })
 })
+
 ipcMain.on("file-dialog", (event, args) => {
-    dialog.showOpenDialog(mainWindow, {
-        filters: [{ name : 'Images', extensions: ['jpg', 'png'] }],
-        properties: ["openFile"]
-    }).then(result => {
+    dialogHelper.selectImage().then(result => {
         if (!result.canceled) {
-            mainWindow.webContents.send("file-dialog-response", result.filePaths[0])
+            winManager.sendToMainWindow("file-dialog-response", result.filePaths[0])
         }
     })
 })
 
-let collectionWindow
 ipcMain.on("open-image-collection", (event, args) => {
-    collectionWindow = new BrowserWindow({
-        width: 900,
-        height: 1000,
-        icon: path.join(__dirname, 'images', 'icon.png'),
-        webPreferences: {
-            nodeIntegration: false, // is default value after Electron v5
-            contextIsolation: true, // protect against prototype pollution
-            enableRemoteModule: false, // turn off remote
-            preload: path.join(__dirname, 'node_scripts', 'preload_collection.js')
-        }
-    })
-    windows.add(collectionWindow)
-    collectionWindow.on("closed", () => {
-        windows.delete(collectionWindow)
-        collectionWindow = null
-    })
-
-    collectionWindow.loadFile(path.join(__dirname, './pages/collection.html'))
-
-    collectionWindow.webContents.setWindowOpenHandler(({url}) => {
-        shell.openExternal(url);
-        return { action: 'deny' }
-    })
+    winManager.createCollectionWindow()
 })
 
 ipcMain.on("ask-output-file-tree", (event, folder) => {
-    collectionWindow.webContents.send("output-file-tree-response", fe.walkFolder(path.join(store.getUserImagesPath(), folder)))
+    winManager.sendToCollectionWindow("output-file-tree-response", collecManager.getCollection(folder))
 })
 
 ipcMain.on("ask-user-files-path", (event, args) => {
-    var path = store.getUserImagesPath()
-    var isValid = true
+    var path = collecManager.getPath()
     fs.access(path, error => {
-        if (error) {
-            isValid = false
-        }
-        windows.forEach((window) => { window.webContents.send("user-files-path-response", { path, isValid }) })
+       winManager.sendToAllWindows("user-files-path-response", { path, isValid: !error })
     })
 })
 
-function changeOutputPath(outputPath) {
-    if (!outputPath.match(/Dreamer$/i)) {
-        outputPath = path.join(outputPath, "Dreamer"), (err) => {}
-        fs.mkdir(outputPath, (err) => {})
-    }
-    fs.mkdir(path.join(outputPath, "deepdaze"), (err) => {})
-    store.setUserImagesPath(outputPath)
-    windows.forEach((window) => { window.webContents.send("user-files-path-response", { path: outputPath, isValid: true }) })
-}
 ipcMain.on("change-user-files-path", (event, args) => {
-    dialog.showOpenDialog({
-        title: "Where Dreamer must create his output directory ?",
-        properties: ['openDirectory'],
-        buttonLabel: "Here !"
-    }).then(result => {
+    dialogHelper.selectFolder("Where Dreamer must create his output directory ?", "Here !")
+    .then(result => {
         if (!result.canceled) {
             fs.access(result.filePaths[0], error => {
+                var outputPath = result.filePaths[0]
                 if (!error) {
-                    changeOutputPath(result.filePaths[0])
-                } else {
-                    windows.forEach((window) => { window.webContents.send("user-files-path-response", { path: "none", isValid: false }) })
+                    outputPath = collecManager.changeOutputPath(result.filePaths[0])
                 }
+                winManager.sendToAllWindows("user-files-path-response", { path: outputPath, isValid: !error })
             })
         }
     })
 })
-function deleteContent(path, type) {
-    fs.access(path, error => {
-        if (!error) {
-            dialog.showMessageBox(collectionWindow, {
-                title: 'Delete content',
-                type: 'question',
-                message: type == "folder" ? 'Do you really want to delete this folder and all his content ?' : 'Do you really want to delete this image ?',
-                buttons: ['Yes', 'No'],
-                defaultId: 1
-            }).then(promise => {
-                if (promise.response == 0) {
-                    fs.rm(path, {recursive: (type == "folder")}, (err) => {
-                        if (!err) {
-                            collectionWindow.webContents.send("element-deleted", path)
-                        }
-                    })
-                }
-            })
-        }
-    })
-}
+
 ipcMain.on("delete-folder", (event, path) => {
-    deleteContent(path, "folder")
+    collecManager.deleteFolder(path)
 })
 ipcMain.on("delete-image", (event, path) => {
-    deleteContent(path, "file")
+    collecManager.deleteFile(path)
 })
+
 ipcMain.on("exec-realsr", (event, scenario) => {
     var process = realsr.spawnRealsr(scenario, path.join(__dirname, "contents"))
     process.on('error', (error) => {
-        dialog.showMessageBox({
-            title: 'Error',
-            type: 'warning',
-            message: 'Error occured.\r\n' + error
-        })
+        dialogHelper.showError('Error occured.\r\n' + error)
     })
     process.stdout.setEncoding('utf8')
-    process.stdout.on('data', (data) => sendProcessResponse(collectionWindow, data.toString()))
+    process.stdout.on('data', (data) => winManager.sendProcessResponseToCollectionWindow(data.toString()))
     process.stderr.setEncoding('utf8')
-    process.stderr.on('data', (data) => sendProcessResponse(collectionWindow, data))
+    process.stderr.on('data', (data) => winManager.sendProcessResponseToCollectionWindow(data))
     process.on('close', (code) => {  
-        collectionWindow.webContents.send('exec-realsr-close', code)
+        winManager.sendToCollectionWindow('exec-realsr-close', code)
     })
 })
+
 ipcMain.on("ask-image-info", (event, imagePath) => {
-    collectionWindow.webContents.send('image-info-response', fe.getImageInfos(imagePath))
+    winManager.sendToCollectionWindow('image-info-response', fe.getImageInfos(imagePath))
 })
+
 ipcMain.on("shell-open-path", (event, filePath) => {
     shell.openPath(filePath)
 })
