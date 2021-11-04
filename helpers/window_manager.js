@@ -2,6 +2,7 @@ const { app, shell, BrowserWindow } = require('electron')
 const path = require('path')
 
 const dialogHelper = require("./dialog_helper")
+const fileExplorer = require("./file_explorer")
 
 var windows = new Set()
 var mainWindow
@@ -66,10 +67,14 @@ function createCollectionWindow() {
 }
 
 function sendToMainWindow(channel, data) {
-    mainWindow.webContents.send(channel, data)
+    if (mainWindow) {
+        mainWindow.webContents.send(channel, data)
+    }
 }
 function sendToCollectionWindow(channel, data) {
-    collectionWindow.webContents.send(channel, data)
+    if (collectionWindow) {
+        collectionWindow.webContents.send(channel, data)
+    }
 }
 function sendToAllWindows(channel, data) {
     windows.forEach((window) => {

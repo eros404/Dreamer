@@ -150,10 +150,6 @@ ipcMain.on("exec-realsr", (event, scenario) => {
     })
 })
 
-ipcMain.on("ask-image-info", (event, imagePath) => {
-    winManager.sendToCollectionWindow('image-info-response', fe.getImageInfos(imagePath))
-})
-
 ipcMain.on("shell-open-path", (event, filePath) => {
     shell.openPath(filePath)
 })

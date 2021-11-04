@@ -11,7 +11,6 @@ contextBridge.exposeInMainWorld(
                 "delete-folder",
                 "delete-image",
                 "exec-realsr",
-                "ask-image-info",
                 "shell-open-path"
             ]
             if (validChannels.includes(channel)) {
@@ -25,7 +24,7 @@ contextBridge.exposeInMainWorld(
                 "element-deleted",
                 "process-response",
                 "exec-realsr-close",
-                "image-info-response"
+                "image-added"
             ]
             if (validChannels.includes(channel)) {
                 // Deliberately strip event as it includes `sender` 

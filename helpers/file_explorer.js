@@ -20,7 +20,7 @@ function getFolderImages(folder) {
     for (const file of files) {
         const filePath = path.join(folder, file)
         const stat = fs.statSync(filePath)
-        if (stat.isFile() && file.match(/(\.png|\.jpg|\.gif)$/)) {
+        if (isImage(filePath)) {
             images.push({
                 name: file,
                 path: filePath,
@@ -51,6 +51,11 @@ function walkFolder(rootFolder) {
     return folders
 }
 
+function isImage(filePath) {
+    const stat = fs.statSync(filePath)
+    return stat.isFile() && filePath.match(/(\.png|\.jpg|\.gif)$/)
+}
+
 function getImageInfos(filePath) {
     const stat = fs.statSync(filePath)
     return {
@@ -65,5 +70,6 @@ function getImageInfos(filePath) {
 
 module.exports = {
     walkFolder: walkFolder,
-    getImageInfos: getImageInfos
+    getImageInfos: getImageInfos,
+    isImage: isImage
 }

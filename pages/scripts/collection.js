@@ -1,5 +1,3 @@
-let upscaledFileOutput
-
 $(document).ready(function() {
     $("#realsr-modal").hide()
     $("#image-modal").hide()
@@ -20,7 +18,6 @@ $(document).ready(function() {
             false,
             $("#realsr-input-tta").is(":checked")
         )
-        upscaledFileOutput = scenario.outputPath
         window.api.send("exec-realsr", scenario)
     })
 })
@@ -54,18 +51,31 @@ function fillWithImages(container, images) {
         newDiv.find(".image-delete").on("click", () => {
             window.api.send("delete-image", image.path)
         })
-        container.append(newDiv)
+        for (const child of container.children()) {
+
+            if (idFriendly(image.path).localeCompare(idFriendly($(child).attr("id"))) < 0) {
+                console.log("pass :\n" + image.path)
+                newDiv.insertBefore($(child))
+                break
+            }
+        }
+        if (container.find("#" + idFriendly(image.path)).length == 0) {
+            console.log(" not pass :\n" + image.path)
+            container.append(newDiv)
+        }
     }
 }
 
 window.api.receive("output-file-tree-response", (response) => {
     $("#collection").html("")
     for (const folder of response) {
+        let matchName = folder.name.match(/^(\d+)-(\d+)-(\d+)_(\d+)_(\d+)_\d+_\d+_(\w+)$/) // 1->year 2->month 3->day 4->hour 5->minutes 6->name
+        if (!matchName) { continue }
+
         var newDiv = $("<div id='" + idFriendly(folder.path) + "'></div>")
         newDiv.html($("#dir-template").html())
         let dirName = newDiv.find(".dir-name")
         let dirContent = newDiv.find(".dir-content")
-        let matchName = folder.name.match(/^(\d+)-(\d+)-(\d+)_(\d+)_(\d+)_\d+_\d+_(\w+)$/) // 1->year 2->month 3->day 4->hour 5->minutes 6->name
         newDiv.find(".dir-datetime").text([matchName[1], matchName[2], matchName[3]].join("/") + " " + [matchName[4], matchName[5]].join(":"))
         newDiv.find(".dir-delete").on("click", () => {
             window.api.send("delete-folder", folder.path)
@@ -109,11 +119,10 @@ window.api.receive("process-response", (data) => {
 })
 window.api.receive("exec-realsr-close", (code) => {
     if (code == 0) {
-        window.api.send("ask-image-info", upscaledFileOutput)
         $("#realsr-modal").hide()
         $("#console").text("")
     }
 })
-window.api.receive("image-info-response", (image) => {
+window.api.receive("image-added", (image) => {
     fillWithImages($("#" + idFriendly(image.rootDir)).find(".dir-content"), [image])
 })

@@ -1,9 +1,11 @@
 const path = require('path')
 const fs = require('fs')
+const chokidar = require('chokidar')
 
-const store = require("../data/store.js")
-const fe = require("./file_explorer.js")
-const winManager = require("./window_manager.js")
+const store = require("../data/store")
+const fe = require("./file_explorer")
+const winManager = require("./window_manager")
+const dialogHelper = require("./dialog_helper")
 
 function getPath() {
     return store.getUserImagesPath()
@@ -20,7 +22,47 @@ function changeOutputPath(outputPath) {
     }
     fs.mkdir(path.join(outputPath, "deepdaze"), (err) => {})
     store.setUserImagesPath(outputPath)
+    watchCollection()
     return outputPath
+}
+
+var watchedPath
+var watcher
+watchCollection()
+function watchCollection() {
+    var collectionPath = getPath()
+    fs.access(collectionPath, error => {
+        if (!error) {
+            if (!watcher) {
+                watcher = chokidar.watch(collectionPath, {
+                    ignored: /(^|[\/\\])\../, // ignore dotfiles
+                    persistent: true
+                })
+                watcher.on("unlink", filePath => winManager.sendToCollectionWindow("element-deleted", filePath))
+                watcher.on("unlinkDir", filePath => winManager.sendToCollectionWindow("element-deleted", filePath))
+                watcher.on("add", filePath => {
+                    if (fe.isImage(filePath)) {
+                        winManager.sendToCollectionWindow("image-added", fe.getImageInfos(filePath))
+                    }
+                })
+                watcher.on("addDir", dirPath => winManager.sendToCollectionWindow("dir-added", {
+                    name: path.basename(dirPath),
+                    path: dirPath,
+                    images: []
+                }))
+            } else {
+                cleanWatcher()
+                watcher.add(collectionPath)
+            }
+            watchedPath = collectionPath
+        }
+    })
+}
+function cleanWatcher() {
+    if (watchedPath) {
+        watcher.unwatch(watchedPath)
+        watchedPath = null
+    }
 }
 
 function deleteContent(path, mesage, isFolder) {
@@ -29,17 +71,12 @@ function deleteContent(path, mesage, isFolder) {
             dialogHelper.askQuestion(winManager.collectionWindow, 'Delete content',  mesage)
             .then(promise => {
                 if (promise.response == 0) {
-                    fs.rm(path, {recursive: isFolder}, (err) => {
-                        if (!err) {
-                            winManager.sendToCollectionWindow("element-deleted", path)
-                        }
-                    })
+                    fs.rm(path, {recursive: isFolder}, (err) => {})
                 }
             })
         }
     })
 }
-
 function deleteFolder(path) {
     deleteContent(path, 'Do you really want to delete this folder and all his content ?', true)
 }
@@ -51,6 +88,8 @@ module.exports = {
     getPath: getPath,
     getCollection: getCollection,
     changeOutputPath: changeOutputPath,
+    watchCollection: watchCollection,
+    cleanWatcher: cleanWatcher,
     deleteFolder: deleteFolder,
     deleteFile: deleteFile
 }
