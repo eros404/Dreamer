@@ -4,7 +4,6 @@ const fs = require('fs')
 
 const deepdaze = require("./external_processes/deepdaze.js")
 const pipInstall = require("./external_processes/pip_install.js")
-const fe = require("./helpers/file_explorer.js")
 const realsr = require("./external_processes/realsr.js")
 const dialogHelper = require("./helpers/dialog_helper.js")
 const collecManager = require("./helpers/collection_manager.js")
@@ -104,6 +103,7 @@ ipcMain.on("open-image-collection", (event, args) => {
 })
 
 ipcMain.on("ask-output-file-tree", (event, folder) => {
+    collecManager.watchCollection(folder)
     winManager.sendToCollectionWindow("output-file-tree-response", collecManager.getCollection(folder))
 })
 

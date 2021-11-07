@@ -201,7 +201,7 @@
     }
     .modal-content {
         @apply p-5 w-4/5 max-w-3xl;
-        margin: 10% auto; /* 15% from the top and centered */
+        margin: 10vh auto; /* 15% from the top and centered */
     }
     .close {
         @apply float-right text-gray-600 text-2xl font-bold;

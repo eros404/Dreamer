@@ -37,7 +37,7 @@ function fillWithImages(container, images) {
         imageElmt.attr("title", image.name)
         imageElmt.on("click", () => {
             $("#modal-image-name").text(image.name)
-            $("#image-modal-image").attr("src", image.path)
+            $("#image-modal-image").attr("src", `${image.path}?v=${Math.random()}`)
             $("#image-modal").show()
         })
         if (image.path.match(/[\.jpg|\.png]$/)) {
@@ -54,25 +54,24 @@ function fillWithImages(container, images) {
         for (const child of container.children()) {
 
             if (idFriendly(image.path).localeCompare(idFriendly($(child).attr("id"))) < 0) {
-                console.log("pass :\n" + image.path)
                 newDiv.insertBefore($(child))
                 break
             }
         }
         if (container.find("#" + idFriendly(image.path)).length == 0) {
-            console.log(" not pass :\n" + image.path)
             container.append(newDiv)
         }
     }
 }
 
-window.api.receive("output-file-tree-response", (response) => {
-    $("#collection").html("")
-    for (const folder of response) {
-        let matchName = folder.name.match(/^(\d+)-(\d+)-(\d+)_(\d+)_(\d+)_\d+_\d+_(\w+)$/) // 1->year 2->month 3->day 4->hour 5->minutes 6->name
-        if (!matchName) { continue }
+function addFolder(folder) {
+    var folderId = idFriendly(folder.path)
+    if ($("#collection").find("#" + folderId).length > 0) { return }
 
-        var newDiv = $("<div id='" + idFriendly(folder.path) + "'></div>")
+    let matchName = folder.name.match(/^(\d+)-(\d+)-(\d+)_(\d+)_(\d+)_\d+_\d+_(\w+)$/) // 1->year 2->month 3->day 4->hour 5->minutes 6->name
+        if (!matchName) { return }
+
+        var newDiv = $("<div id='" + folderId + "'></div>")
         newDiv.html($("#dir-template").html())
         let dirName = newDiv.find(".dir-name")
         let dirContent = newDiv.find(".dir-content")
@@ -91,6 +90,12 @@ window.api.receive("output-file-tree-response", (response) => {
         })
         fillWithImages(dirContent, folder.images)
         $("#collection").prepend(newDiv)
+}
+
+window.api.receive("output-file-tree-response", (response) => {
+    $("#collection").html("")
+    for (const folder of response) {
+        addFolder(folder)
     }
 })
 
@@ -124,5 +129,18 @@ window.api.receive("exec-realsr-close", (code) => {
     }
 })
 window.api.receive("image-added", (image) => {
-    fillWithImages($("#" + idFriendly(image.rootDir)).find(".dir-content"), [image])
+    var folder = $("#" + idFriendly(image.rootDir))
+    if (folder) {
+        fillWithImages(folder.find(".dir-content"), [image])
+    }
+})
+window.api.receive("dir-added", (dir) => {
+    addFolder(dir)
+})
+window.api.receive("file-changed", (filePath) => {
+    console.log(filePath)
+    var image = $(`#${idFriendly(filePath)}`)
+    if (image) {
+        image.find(".image").attr("src", `${filePath}?v=${Math.random()}`)
+    }
 })

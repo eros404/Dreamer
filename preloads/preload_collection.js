@@ -24,7 +24,9 @@ contextBridge.exposeInMainWorld(
                 "element-deleted",
                 "process-response",
                 "exec-realsr-close",
-                "image-added"
+                "image-added",
+                "dir-added",
+                "file-changed"
             ]
             if (validChannels.includes(channel)) {
                 // Deliberately strip event as it includes `sender` 

@@ -19,6 +19,7 @@ function getDeepdazeArguments(deepdazeScenario) {
     ]
     if (deepdazeScenario.image) {
         arguments.push("--img=" + deepdazeScenario.image)
+        // arguments.push("--start_image_path=" + deepdazeScenario.image)
     }
     return arguments
 }

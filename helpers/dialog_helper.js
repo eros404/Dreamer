@@ -35,7 +35,7 @@ function selectFolder(title, buttonLabel) {
 }
 
 function selectImage() {
-    return dialog.showOpenDialog(mainWindow, {
+    return dialog.showOpenDialog({
         filters: [{ name : 'Images', extensions: ['jpg', 'png'] }],
         properties: ["openFile"]
     })

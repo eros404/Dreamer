@@ -41,6 +41,7 @@
         <p class="font-bold">The process is not using your graphical card because CUDA is not available. <a target="_blank" href="https://pytorch.org/get-started/locally/" class="text-white">Install manually.</a></p>
       </div>
       <div id="process-data">
+        <img id="dd-output-image" src="" class="rounded-md shadow" />
         <div class="flex w-full font-mono">
           <p class="text-center flex-initial mx-2">
             loss: <span id="process-loss"></span>
@@ -53,7 +54,6 @@
           </p>
           <p id="process-it-second" class="text-right flex-auto mx-2"></p>
         </div>
-        <img id="dd-output-image" src="" class="rounded-md shadow" />
       </div>
       <p id="console" class="bg-gray-800 text-white min-h-1.75 w-full rounded-md shadow px-2 py-1 font-mono"></p>
       <div id="dd-form-container">
@@ -139,6 +139,12 @@
                     </span>
                   </div>
                 </div>
+                <div class="field">
+                  <p>
+                    <input id="dd-input-deeper" name="dd-input-deeper" type="checkbox" />
+                    <label for="dd-input-deeper">Deeper</label>
+                  </p>
+                </div>
                 <div class="flex">
                   <div class="field mr-3">
                     <p><label for="dd-input-layer-size">Hidden size</label></p>
@@ -154,12 +160,6 @@
                       <span class="tooltiptext">The number of generated images to pass into Siren before calculating loss.</span>
                     </span>
                   </div>
-                </div>
-                <div class="field">
-                  <p>
-                    <input id="dd-input-deeper" name="dd-input-deeper" type="checkbox" />
-                    <label for="dd-input-deeper">Deeper</label>
-                  </p>
                 </div>
               </div>
             </div>

@@ -1,8 +1,8 @@
-const { app, shell, BrowserWindow } = require('electron')
+const { shell, BrowserWindow } = require('electron')
 const path = require('path')
 
 const dialogHelper = require("./dialog_helper")
-const fileExplorer = require("./file_explorer")
+const collecManager = require("./collection_manager")
 
 var windows = new Set()
 var mainWindow
@@ -53,6 +53,7 @@ function createCollectionWindow() {
         }
     })
     windows.add(collectionWindow)
+
     collectionWindow.on("closed", () => {
         windows.delete(collectionWindow)
         collectionWindow = null

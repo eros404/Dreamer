@@ -15,6 +15,7 @@ function getCollection(folder) {
     return fe.walkFolder(path.join(getPath(), folder))
 }
 
+var watchedPath
 function changeOutputPath(outputPath) {
     if (!outputPath.match(/Dreamer$/i)) {
         outputPath = path.join(outputPath, "Dreamer"), (err) => {}
@@ -22,21 +23,22 @@ function changeOutputPath(outputPath) {
     }
     fs.mkdir(path.join(outputPath, "deepdaze"), (err) => {})
     store.setUserImagesPath(outputPath)
-    watchCollection()
+    if (watchedPath) {
+        watchCollection(path.basename(watchedPath))
+    }
     return outputPath
 }
 
-var watchedPath
 var watcher
-watchCollection()
-function watchCollection() {
-    var collectionPath = getPath()
+function watchCollection(generator) {
+    var collectionPath = path.join(getPath(), generator)
     fs.access(collectionPath, error => {
         if (!error) {
             if (!watcher) {
                 watcher = chokidar.watch(collectionPath, {
                     ignored: /(^|[\/\\])\../, // ignore dotfiles
-                    persistent: true
+                    persistent: true,
+                    depth: 2
                 })
                 watcher.on("unlink", filePath => winManager.sendToCollectionWindow("element-deleted", filePath))
                 watcher.on("unlinkDir", filePath => winManager.sendToCollectionWindow("element-deleted", filePath))
@@ -50,6 +52,7 @@ function watchCollection() {
                     path: dirPath,
                     images: []
                 }))
+                watcher.on("change", filePath => winManager.sendToCollectionWindow("file-changed", filePath))
             } else {
                 cleanWatcher()
                 watcher.add(collectionPath)
