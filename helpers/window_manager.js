@@ -2,7 +2,6 @@ const { shell, BrowserWindow } = require('electron')
 const path = require('path')
 
 const dialogHelper = require("./dialog_helper")
-const collecManager = require("./collection_manager")
 
 var windows = new Set()
 var mainWindow
@@ -10,23 +9,28 @@ var collectionWindow
 
 function createMainWindow() {
     mainWindow = new BrowserWindow({
-    width: 900,
-    height: 1000,
-    icon: path.join(__dirname, '..', 'images', 'icon.png'),
-    webPreferences: {
-        nodeIntegration: false, // is default value after Electron v5
-        contextIsolation: true, // protect against prototype pollution
-        enableRemoteModule: false, // turn off remote
-        preload: path.join(__dirname, '..', 'preloads', 'preload.js')
-        }
-    })
+        show: false,
+        width: 900,
+        height: 1000,
+        icon: path.join(__dirname, '..', 'images', 'icon.png'),
+        webPreferences: {
+                nodeIntegration: false, // is default value after Electron v5
+                contextIsolation: true, // protect against prototype pollution
+                enableRemoteModule: false, // turn off remote
+                preload: path.join(__dirname, '..', 'preloads', 'preload.js')
+            }
+        })
     windows.add(mainWindow)
+
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show()
+    })
     mainWindow.on("closed", () => {
         windows.delete(mainWindow);
         mainWindow = null;
     });
 
-    mainWindow.loadFile(path.join(__dirname, '..', 'pages', 'deepdaze.html'))
+    mainWindow.loadURL(`file://${path.join(__dirname, '..', 'pages', '_layout.html')}?page=deepdaze`)
     // Ouvrir les outils de développement.
     //mainWindow.webContents.openDevTools()
 
@@ -42,6 +46,7 @@ function createCollectionWindow() {
         return
     }
     collectionWindow = new BrowserWindow({
+        show: false,
         width: 900,
         height: 1000,
         icon: path.join(__dirname, '..', 'images', 'icon.png'),
@@ -54,12 +59,15 @@ function createCollectionWindow() {
     })
     windows.add(collectionWindow)
 
+    collectionWindow.once('ready-to-show', () => {
+        collectionWindow.show()
+    })
     collectionWindow.on("closed", () => {
         windows.delete(collectionWindow)
         collectionWindow = null
     })
 
-    collectionWindow.loadFile(path.join(__dirname, '..', 'pages', 'collection.html'))
+    collectionWindow.loadURL(`file://${path.join(__dirname, '..', 'pages', '_layout.html')}?page=collection`)
 
     collectionWindow.webContents.setWindowOpenHandler(({url}) => {
         shell.openExternal(url);

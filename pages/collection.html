@@ -1,111 +1,81 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/styles.css">
-    <title>Dreamer</title>
-  </head>
-  <body class="text-navy scroll-smooth font-open dark:bg-black dark:bg-opacity-95 dark:text-gray-50">
-    <main class="p-4 my-0 mx-auto max-w-3xl">
-      <header class="mb-4 h-20">
-        <img class="mx-auto h-full" src="../images/icon.png">
-      </header>
-      <p id="output-directory-warning" class="text-red font-bold">Please select a valid path where Dreamer can create his output directory.</p>
-      <div class="flex justify-between container-accent pl-3">
-        <p class="my-2">Output path: <code id="dreamer-output-path" class="font-bold"></code></p>
-        <button id="choose-dreamer-output-path">Choose...</button>
+<h1>Dream collection</h1>
+<p>Here you can watch, delete and upscale your dreams.</p>
+<h2>RealSR ncnn Vulkan</h2>
+<p>Real-World Super-Resolution via Kernel Estimation and Noise Injection (CVPRW 2020) by <a target="_blank" href="https://github.com/nihui">@nihui</a> (<a target="_blank" href="https://github.com/nihui/realsr-ncnn-vulkan">source repository</a>).</p>
+<p>RealSR is able to upscale your images with a ratio of 4 and great quality.</p>
+<hr>
+<div id="collection-container">
+  <select name="generator" id="generator_input" class="btn-primary w-full text-lg p-3">
+    <option value="deepdaze">Deep Daze</option>
+  </select>
+  <div id="collection" class="container-accent p-3">
+  </div>
+</div>
+
+<template id="dir-template">
+  <div class="dir container-accent m-2">
+    <div class="small flex justify-between">
+      <span class="dir-datetime"></span>
+      <div>
+        <span class="hover:text-green underline dir-open cursor-pointer mr-1">Open in file explorer</span>
+        <span class="hover:text-red underline dir-delete cursor-pointer">Delete</span>
       </div>
-      <h1>Dream collection</h1>
-      <p>Here you can watch, delete and upscale your dreams.</p>
-      <h2>RealSR ncnn Vulkan</h2>
-      <p>Real-World Super-Resolution via Kernel Estimation and Noise Injection (CVPRW 2020) by <a target="_blank" href="https://github.com/nihui">@nihui</a> (<a target="_blank" href="https://github.com/nihui/realsr-ncnn-vulkan">source repository</a>).</p>
-      <p>RealSR is able to upscale your images with a ratio of 4 and great quality.</p>
-      <hr>
-      <div id="collection-container">
-        <select name="generator" id="generator_input" class="btn-primary w-full text-lg p-3">
-          <option value="deepdaze">Deep Daze</option>
-        </select>
-        <div id="collection" class="container-accent p-3">
-        </div>
+    </div>
+    <button class="accordion dir-name w-full text-left truncate"></button>
+    <div class="accordion-panel dir-content py-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+  </div>
+</template>
+
+<template id="image-template">
+  <div class="image-container">
+    <div class="small flex justify-between">
+      <span class="image-size"></span>
+      <span class="image-delete hover:text-red cursor-pointer">&#10006;</span>
+    </div>
+    <img class="rounded shadow image m-auto max-w-full cursor-pointer" />
+    <div class="small flex justify-between">
+      <span class="image-dimensions"></span>
+      <span class="open-realsr text-green hover:underline cursor-pointer">upscale x4</span>
+    </div>
+  </div>
+</template>
+
+<div id="image-modal" class="modal overflow-auto">
+  <div class="modal-content container-accent">
+    <span class="close image-modal-close">&times;</span>
+    <h3 id="modal-image-name" class="truncate"></h3>
+    <img src="" class="shadow block mx-auto w-full" id="image-modal-image">
+  </div>
+</div>
+
+<div id="realsr-modal" class="modal">
+  <div class="modal-content container-accent">
+    <span class="close realsr-modal-close">&times;</span>
+    <h2>Upscaling</h2>
+    <p>If you encounter crash or error, try to upgrade your GPU driver</p>
+    <ul>
+      <li><a target="_blank" href="https://downloadcenter.intel.com/product/80939/Graphics-Drivers">Intel</a></li>
+      <li><a target="_blank" href="https://www.amd.com/en/support">AMD</a></li>
+      <li><a target="_blank" href="https://www.nvidia.com/Download/index.aspx">NVIDIA</a></li>
+    </ul>
+    <hr>
+    <div class="md:flex">
+      <div>
+        <img id="realsr-image" src="" class="rounded shadow w-40 h-auto md:mr-3">
       </div>
-
-      <template id="dir-template">
-        <div class="dir container-accent m-2">
-          <div class="small flex justify-between">
-            <span class="dir-datetime"></span>
-            <div>
-              <span class="hover:text-green underline dir-open cursor-pointer mr-1">Open in file explorer</span>
-              <span class="hover:text-red underline dir-delete cursor-pointer">Delete</span>
-            </div>
-          </div>
-          <button class="accordion dir-name w-full text-left truncate"></button>
-          <div class="accordion-panel dir-content py-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+      <form id="realsr-form">
+        <!-- <div class="field">
+          <input id="realsr-input-overwrite" name="realsr-input-overwrite" type="checkbox">
+          <label for="realsr-input-overwrite">Overwrite original image</label>
+        </div> -->
+        <div class="field">
+          <input id="realsr-input-tta" name="realsr-input-tta" type="checkbox">
+          <label for="realsr-input-tta">Enable TTA (test-time augmentation) mode</label>
+          <div class="small">Reduce several type of artifacts but a lot slower than non TTA mode.</div>
         </div>
-      </template>
-
-      <template id="image-template">
-        <div class="image-container">
-          <div class="small flex justify-between">
-            <span class="image-size"></span>
-            <span class="image-delete hover:text-red cursor-pointer">&#10006;</span>
-          </div>
-          <img class="rounded shadow image m-auto max-w-full cursor-pointer" />
-          <div class="small flex justify-between">
-            <span class="image-dimensions"></span>
-            <span class="open-realsr text-green hover:underline cursor-pointer">upscale x4</span>
-          </div>
-        </div>
-      </template>
-
-      <div id="image-modal" class="modal overflow-auto">
-        <div class="modal-content container-accent">
-          <span class="close image-modal-close">&times;</span>
-          <h3 id="modal-image-name" class="truncate"></h3>
-          <img src="" class="shadow block mx-auto w-full" id="image-modal-image">
-        </div>
-      </div>
-
-      <div id="realsr-modal" class="modal">
-        <div class="modal-content container-accent">
-          <span class="close realsr-modal-close">&times;</span>
-          <h2>Upscaling</h2>
-          <p>If you encounter crash or error, try to upgrade your GPU driver</p>
-          <ul>
-            <li><a target="_blank" href="https://downloadcenter.intel.com/product/80939/Graphics-Drivers">Intel</a></li>
-            <li><a target="_blank" href="https://www.amd.com/en/support">AMD</a></li>
-            <li><a target="_blank" href="https://www.nvidia.com/Download/index.aspx">NVIDIA</a></li>
-          </ul>
-          <hr>
-          <div class="md:flex">
-            <div>
-              <img id="realsr-image" src="" class="rounded shadow w-40 h-auto md:mr-3">
-            </div>
-            <form id="realsr-form">
-              <!-- <div class="field">
-                <input id="realsr-input-overwrite" name="realsr-input-overwrite" type="checkbox">
-                <label for="realsr-input-overwrite">Overwrite original image</label>
-              </div> -->
-              <div class="field">
-                <input id="realsr-input-tta" name="realsr-input-tta" type="checkbox">
-                <label for="realsr-input-tta">Enable TTA (test-time augmentation) mode</label>
-                <div class="small">Reduce several type of artifacts but a lot slower than non TTA mode.</div>
-              </div>
-              <input id="realsr-submit" type="submit" value="Upscale &#128208;" class="btn-primary">
-            </form>
-          </div>
-          <p id="console" class="bg-gray-800 text-white min-h-1.75 w-full rounded-md shadow px-2 py-1 font-mono"></p>
-        </div>
-      </div>
-
-      <small class="small">by Eros404</small>
-    </main>
-  </body>
-  <script src="../contents/jquery-3.6.0.min.js"></script>
-  <script src="./scripts/scenarios.js"></script>
-  <script src="./scripts/common.js"></script>
-  <script src="./scripts/collection.js"></script>
-</html>
+        <input id="realsr-submit" type="submit" value="Upscale &#128208;" class="btn-primary">
+      </form>
+    </div>
+    <p id="console" class="bg-gray-800 text-white min-h-1.75 w-full rounded-md shadow px-2 py-1 font-mono"></p>
+  </div>
+</div>

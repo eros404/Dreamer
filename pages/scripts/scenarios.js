@@ -20,10 +20,9 @@ class DeepdazeScenario {
 }
 
 class RealsrScenario {
-    constructor(inputPath, overwriteOriginal, enableTTA) {
+    constructor(inputPath, enableTTA) {
         this.inputPath = inputPath,
-        this.overwriteOriginal = overwriteOriginal,
         this.enableTTA = enableTTA,
-        this.outputPath = this.overwriteOriginal ? this.inputPath : this.inputPath.slice(0, (this.inputPath.length - this.inputPath.match(/\.[a-zA-Z]+$/)[0].length)) + ".x4" + (this.enableTTA ? "tta" : "") + this.inputPath.slice((this.inputPath.length - this.inputPath.match(/\.[a-zA-Z]+$/)[0].length))
+        this.outputPath = this.inputPath.slice(0, (this.inputPath.length - this.inputPath.match(/\.[a-zA-Z]+$/)[0].length)) + ".x4" + (this.enableTTA ? "tta" : "") + this.inputPath.slice((this.inputPath.length - this.inputPath.match(/\.[a-zA-Z]+$/)[0].length))
     }
 }

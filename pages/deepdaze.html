@@ -1,181 +1,150 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/styles.css">
-    <title>Dreamer</title>
-  </head>
-  <body class="text-navy scroll-smooth font-open dark:bg-black dark:bg-opacity-95 dark:text-gray-50">
-    <main class="p-4 my-0 mx-auto max-w-3xl">
-      <header class="mb-4 h-20">
-        <img class="mx-auto h-full" src="../images/icon.png">
-      </header>
-      <p id="output-directory-warning" class="text-red font-bold">Please select a valid path where Dreamer can create his output directory.</p>
-      <div class="flex justify-between container-accent pl-3 mb-2">
-        <p class="my-2">Output path: <code id="dreamer-output-path" class="font-bold"></code></p>
-        <button id="choose-dreamer-output-path">Choose...</button>
+<h1>Deep Daze</h1>
+<p>Deep Daze is a simple command line tool for text to image generation using OpenAI's <a target="_blank" href="https://github.com/openai/CLIP">CLIP</a> and <a target="_blank" href="https://arxiv.org/abs/2006.09661">Siren</a>.</p>
+<p>It is created by Phil Wang (<a target="_blank" href="https://github.com/lucidrains">@lucidrains</a>), you can found the source repository <a target="_blank" href="https://github.com/lucidrains/deep-daze">here</a>.</p>
+<h2>Requirements</h2>
+<p>This will require that you have an <strong>Nvidia GPU or AMD GPU</strong></p>
+<ul>
+  <li>Recommended: 16GB VRAM</li>
+  <li>Minimum Requirements: 4GB VRAM (using VERY LOW settings)</li>
+</ul>
+<div id="dd-install" class="container-accent px-3">
+  <h2>Installation</h2>
+  <p class="font-bold"><a target="_blank" href="https://www.python.org/downloads/">Python</a> must be installed</p>
+  <button id="install-deepdaze" class="btn-primary my-2">Install Deepdaze &#128295;</button>
+</p>
+</div>
+<hr>
+<div id="cuda-warning" class="container-warning px-3 pb-3">
+  <h4>Warning</h4>
+  <p class="font-bold">The process is not using your graphical card because CUDA is not available. <a target="_blank" href="https://pytorch.org/get-started/locally/" class="text-white">Install manually.</a></p>
+</div>
+<div id="process-data">
+  <img id="dd-output-image" src="" class="rounded-md shadow" />
+  <div class="flex w-full font-mono">
+    <p class="text-center flex-initial mx-2">
+      loss: <span id="process-loss"></span>
+    </p>
+    <div id="data-progress" class="w-40 flex-auto mx-2 h-4 border shadow mt-4">
+      <div id="data-progress-bar" class="h-full bg-green bg-gradient-to-r from-darkgreen to-green"></div>
+    </div>
+    <p class="text-left flex-auto mx-2">
+      <span id="process-current-epoch"></span>/<span id="process-total-epochs"></span> epochs
+    </p>
+    <p id="process-it-second" class="text-right flex-auto mx-2"></p>
+  </div>
+</div>
+<p id="console" class="bg-gray-800 text-white min-h-1.75 w-full rounded-md shadow px-2 py-1 font-mono"></p>
+<div id="dd-form-container">
+  <form id="dd-form" class="container-accent p-3">
+    <div class="sm:flex">
+      <div class="field mr-3 flex-initial">
+        <p><label for="dd-input-text">Text</label></p>
+        <span class="tooltip">
+          <input id="dd-input-text" name="dd-input-text" type="text" placeholder="A Panda biking in space" required maxlength="77" class="w-60" />
+          <span class="tooltiptext">A phrase which you would like to visualize.</span>
+        </span>
       </div>
-      <button id="open-collection" class="w-full btn-primary">Open collection</button>
-      <h1>Deep Daze</h1>
-      <p>Deep Daze is a simple command line tool for text to image generation using OpenAI's <a target="_blank" href="https://github.com/openai/CLIP">CLIP</a> and <a target="_blank" href="https://arxiv.org/abs/2006.09661">Siren</a>.</p>
-      <p>It is created by Phil Wang (<a target="_blank" href="https://github.com/lucidrains">@lucidrains</a>), you can found the source repository <a target="_blank" href="https://github.com/lucidrains/deep-daze">here</a>.</p>
-      <h2>Requirements</h2>
-      <p>This will require that you have an <strong>Nvidia GPU or AMD GPU</strong></p>
-      <ul>
-        <li>Recommended: 16GB VRAM</li>
-        <li>Minimum Requirements: 4GB VRAM (using VERY LOW settings)</li>
-      </ul>
-      <div id="dd-install" class="container-accent px-3">
-        <h2>Installation</h2>
-        <p class="font-bold"><a target="_blank" href="https://www.python.org/downloads/">Python</a> must be installed</p>
-        <button id="install-deepdaze" class="btn-primary my-2">Install Deepdaze &#128295;</button>
-      </p>
-      </div>
-      <hr>
-      <div id="cuda-warning" class="container-warning px-3 pb-3">
-        <h4>Warning</h4>
-        <p class="font-bold">The process is not using your graphical card because CUDA is not available. <a target="_blank" href="https://pytorch.org/get-started/locally/" class="text-white">Install manually.</a></p>
-      </div>
-      <div id="process-data">
-        <img id="dd-output-image" src="" class="rounded-md shadow" />
-        <div class="flex w-full font-mono">
-          <p class="text-center flex-initial mx-2">
-            loss: <span id="process-loss"></span>
-          </p>
-          <div id="data-progress" class="w-40 flex-auto mx-2 h-4 border shadow mt-4">
-            <div id="data-progress-bar" class="h-full bg-green bg-gradient-to-r from-darkgreen to-green"></div>
+      <div class="flex-auto flex">
+        <div class="field flex-initial">
+          <p><label for="dd-input-image">Image</label></p>
+          <div>
+            <button id="dd-input-image" name="dd-input-image" type="button">Choose...</button>
+            <button id="dd-image-cancel" type="button" class="btn-cancel">&#10008;</button>
           </div>
-          <p class="text-left flex-auto mx-2">
-            <span id="process-current-epoch"></span>/<span id="process-total-epochs"></span> epochs
-          </p>
-          <p id="process-it-second" class="text-right flex-auto mx-2"></p>
+        </div>
+        <div class="justify-end flex flex-auto">
+          <img id="dd-selected-image" src="" class="h-20 shadow rounded-md" />
         </div>
       </div>
-      <p id="console" class="bg-gray-800 text-white min-h-1.75 w-full rounded-md shadow px-2 py-1 font-mono"></p>
-      <div id="dd-form-container">
-        <form id="dd-form" class="container-accent p-3">
-          <div class="sm:flex">
-            <div class="field mr-3 flex-initial">
-              <p><label for="dd-input-text">Text</label></p>
+    </div>
+    <div class="sm:flex justify-between">
+      <div>
+        <div class="flex">
+          <div class="field mr-3">
+            <p><label for="dd-input-epochs">Epochs</label></p>
+            <span class="tooltip">
+              <input id="dd-input-epochs" name="dd-input-epochs" type="number" value="8" min="1" max="100" />
+              <span class="tooltiptext">The number of epochs to run.</span>
+            </span>
+          </div>
+          <div class="field">
+            <p><label for="dd-input-iterations">Iterations</label></p>
+            <span class="tooltip">
+              <input id="dd-input-iterations" name="dd-input-iterations" type="number" value="1050" min="50" max="2100" step="50" />
+              <span class="tooltiptext">The number of times to calculate and backpropagate loss in a given epoch.</span>
+            </span>
+          </div>
+        </div>
+        <div class="field">
+          <p><label for="dd-input-save_every">Save every</label></p>
+          <span class="tooltip">
+            <input id="dd-input-save_every" name="dd-input-save_every" type="number" value="100" min="10" max="2100" step="10" />
+            <span class="tooltiptext">Generate an image every time iterations is a multiple of this number.</span>
+          </span>
+        </div>
+        <div class="field">
+          <p><label for="dd-input-image_width">Image resolution</label></p>
+          <input id="dd-input-image_width" name="dd-input-image_width" type="number" value="256" min="16" max="1096" step="16" />
+        </div>
+        <div class="flex">
+          <div class="field mr-3">
+            <p>
+              <input id="dd-input-open_forder" name="dd-input-open_forder" type="checkbox" checked />
+              <label for="dd-input-open_forder">Open folder</label>
+            </p>
+          </div>
+          <div class="field">
+            <p>
+              <input id="dd-input-save_GIF" name="dd-input-save_GIF" type="checkbox" />
+              <label for="dd-input-save_GIF">Save GIF</label>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="container-accent2 px-3">
+          <h4 class="text-center">Neural net options</h4>
+          <div class="flex">
+            <div class="field mr-3">
+              <p><label for="dd-input-learning-rate">Learning rate</label></p>
+              <input id="dd-input-learning-rate" name="dd-input-learning-rate" type="number" value="0.000005" min="0.000005" max="0.0000200" step="0.0000025" />
+            </div>
+            <div class="field">
+              <p><label for="dd-input-num-layers">Number of layers</label></p>
               <span class="tooltip">
-                <input id="dd-input-text" name="dd-input-text" type="text" placeholder="A Panda biking in space" required maxlength="77" class="w-60" />
-                <span class="tooltiptext">A phrase which you would like to visualize.</span>
+                <input id="dd-input-num-layers" name="dd-input-num-layers" type="number" value="16" min="12" max="44" step="4" />
+                <span class="tooltiptext">The number of hidden layers to use in the Siren neural net.</span>
               </span>
             </div>
-            <div class="flex-auto flex">
-              <div class="field flex-initial">
-                <p><label for="dd-input-image">Image</label></p>
-                <div>
-                  <button id="dd-input-image" name="dd-input-image" type="button">Choose...</button>
-                  <button id="dd-image-cancel" type="button" class="btn-cancel">&#10008;</button>
-                </div>
-              </div>
-              <div class="justify-end flex flex-auto">
-                <img id="dd-selected-image" src="" class="h-20 shadow rounded-md" />
-              </div>
+          </div>
+          <div class="field">
+            <p>
+              <input id="dd-input-deeper" name="dd-input-deeper" type="checkbox" />
+              <label for="dd-input-deeper">Deeper</label>
+            </p>
+          </div>
+          <div class="flex">
+            <div class="field mr-3">
+              <p><label for="dd-input-layer-size">Hidden size</label></p>
+              <span class="tooltip">                    
+                <input id="dd-input-layer-size" name="dd-input-layer-size" type="number" value="256" min="256" max="512" step="64" />
+                <span class="tooltiptext">The hidden layer size of the Siren net.</span>
+              </span>
+            </div>
+            <div class="field">
+              <p><label for="dd-input-batch-size">Batch size</label></p>
+              <span class="tooltip">
+                <input id="dd-input-batch-size" name="dd-input-batch-size" type="number" value="4" min="4" max="64" step="4" />
+                <span class="tooltiptext">The number of generated images to pass into Siren before calculating loss.</span>
+              </span>
             </div>
           </div>
-          <div class="sm:flex justify-between">
-            <div>
-              <div class="flex">
-                <div class="field mr-3">
-                  <p><label for="dd-input-epochs">Epochs</label></p>
-                  <span class="tooltip">
-                    <input id="dd-input-epochs" name="dd-input-epochs" type="number" value="8" min="1" max="100" />
-                    <span class="tooltiptext">The number of epochs to run.</span>
-                  </span>
-                </div>
-                <div class="field">
-                  <p><label for="dd-input-iterations">Iterations</label></p>
-                  <span class="tooltip">
-                    <input id="dd-input-iterations" name="dd-input-iterations" type="number" value="1050" min="50" max="2100" step="50" />
-                    <span class="tooltiptext">The number of times to calculate and backpropagate loss in a given epoch.</span>
-                  </span>
-                </div>
-              </div>
-              <div class="field">
-                <p><label for="dd-input-save_every">Save every</label></p>
-                <span class="tooltip">
-                  <input id="dd-input-save_every" name="dd-input-save_every" type="number" value="100" min="10" max="2100" step="10" />
-                  <span class="tooltiptext">Generate an image every time iterations is a multiple of this number.</span>
-                </span>
-              </div>
-              <div class="field">
-                <p><label for="dd-input-image_width">Image resolution</label></p>
-                <input id="dd-input-image_width" name="dd-input-image_width" type="number" value="256" min="16" max="1096" step="16" />
-              </div>
-              <div class="flex">
-                <div class="field mr-3">
-                  <p>
-                    <input id="dd-input-open_forder" name="dd-input-open_forder" type="checkbox" checked />
-                    <label for="dd-input-open_forder">Open folder</label>
-                  </p>
-                </div>
-                <div class="field">
-                  <p>
-                    <input id="dd-input-save_GIF" name="dd-input-save_GIF" type="checkbox" />
-                    <label for="dd-input-save_GIF">Save GIF</label>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="container-accent2 px-3">
-                <h4 class="text-center">Neural net options</h4>
-                <div class="flex">
-                  <div class="field mr-3">
-                    <p><label for="dd-input-learning-rate">Learning rate</label></p>
-                    <input id="dd-input-learning-rate" name="dd-input-learning-rate" type="number" value="0.000005" min="0.000005" max="0.0000200" step="0.0000025" />
-                  </div>
-                  <div class="field">
-                    <p><label for="dd-input-num-layers">Number of layers</label></p>
-                    <span class="tooltip">
-                      <input id="dd-input-num-layers" name="dd-input-num-layers" type="number" value="16" min="12" max="44" step="4" />
-                      <span class="tooltiptext">The number of hidden layers to use in the Siren neural net.</span>
-                    </span>
-                  </div>
-                </div>
-                <div class="field">
-                  <p>
-                    <input id="dd-input-deeper" name="dd-input-deeper" type="checkbox" />
-                    <label for="dd-input-deeper">Deeper</label>
-                  </p>
-                </div>
-                <div class="flex">
-                  <div class="field mr-3">
-                    <p><label for="dd-input-layer-size">Hidden size</label></p>
-                    <span class="tooltip">                    
-                      <input id="dd-input-layer-size" name="dd-input-layer-size" type="number" value="256" min="256" max="512" step="64" />
-                      <span class="tooltiptext">The hidden layer size of the Siren net.</span>
-                    </span>
-                  </div>
-                  <div class="field">
-                    <p><label for="dd-input-batch-size">Batch size</label></p>
-                    <span class="tooltip">
-                      <input id="dd-input-batch-size" name="dd-input-batch-size" type="number" value="4" min="4" max="64" step="4" />
-                      <span class="tooltiptext">The number of generated images to pass into Siren before calculating loss.</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="text-center">
-            <input id="dd-submit" type="submit" class="btn-primary w-2/3" value="Dream &#128640;" />
-            <button id="cancel-deepdaze" type="button" class="btn-cancel w-2/3">Wake up &#9200;</button>
-          </div> 
-        </form>
+        </div>
       </div>
-      <small class="small">by Eros404</small>
-    </main>
-  </body>
-  <script src="../contents/jquery-3.6.0.min.js"></script>
-  <script src="./scripts/common.js"></script>
-  <script src="./scripts/common_generators.js"></script>
-  <script src="./scripts/scenarios.js"></script>
-  <script src="./scripts/deepdaze.js"></script>
-</html>
+    </div>
+    <div class="text-center">
+      <input id="dd-submit" type="submit" class="btn-primary w-2/3" value="Dream &#128640;" />
+      <button id="cancel-deepdaze" type="button" class="btn-cancel w-2/3">Wake up &#9200;</button>
+    </div> 
+  </form>
+</div>

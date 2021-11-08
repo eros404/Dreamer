@@ -1,25 +1,21 @@
-$(document).ready(function() {
+$("#realsr-modal").hide()
+$("#image-modal").hide()
+$("#generator_input").off("change").on("change", () => {  
+    window.api.send("ask-output-file-tree", $("#generator_input").val())
+})
+$(".realsr-modal-close").off("click").on("click", () => {
     $("#realsr-modal").hide()
+})
+$(".image-modal-close").off("click").on("click", () => {
     $("#image-modal").hide()
-    $("#generator_input").off("change").on("change", () => {  
-        window.api.send("ask-output-file-tree", $("#generator_input").val())
-    })
-    $(".realsr-modal-close").off("click").on("click", () => {
-        $("#realsr-modal").hide()
-    })
-    $(".image-modal-close").off("click").on("click", () => {
-        $("#image-modal").hide()
-    })
-    $("#realsr-form").off("submit").on("submit", (e) => {
-        e.preventDefault()
-        var scenario = new RealsrScenario(
-            $("#realsr-image").attr("src"),
-            // $("#realsr-input-overwrite").is(":checked"),
-            false,
-            $("#realsr-input-tta").is(":checked")
-        )
-        window.api.send("exec-realsr", scenario)
-    })
+})
+$("#realsr-form").off("submit").on("submit", (e) => {
+    e.preventDefault()
+    var scenario = new RealsrScenario(
+        $("#realsr-image").attr("src"),
+        $("#realsr-input-tta").is(":checked")
+    )
+    window.api.send("exec-realsr", scenario)
 })
 
 function idFriendly(text) {

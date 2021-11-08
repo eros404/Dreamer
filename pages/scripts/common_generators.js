@@ -7,12 +7,13 @@ window.api.receive("user-files-path-response", (response) => {
     }
 })
 
-$(document).ready(function() {
-    window.api.send("ask-user-files-path")
-    $("#choose-dreamer-output-path").off('click').on("click", () => {
-        window.api.send("change-user-files-path")
-    })
-    $("#open-collection").off("click").on("click", () => {
-        window.api.send("open-image-collection")
-    })
+$("#generator_main").load(`./${page}.html`)
+
+$("#choose-dreamer-output-path").off('click').on("click", () => {
+    window.api.send("change-user-files-path")
 })
+$("#open-collection").off("click").on("click", () => {
+    window.api.send("open-image-collection")
+})
+
+loadScript(`./scripts/${page}.js`)

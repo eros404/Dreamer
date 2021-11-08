@@ -1,3 +1,9 @@
+function loadScript(src) {
+    var s = document.createElement("script")
+    s.src = src
+    document.head.appendChild(s)
+}
+
 window.api.receive("user-files-path-response", (response) => {
     $("#dreamer-output-path").text(response.path)
     if (!response.isValid) {
@@ -13,7 +19,16 @@ window.api.receive("user-files-path-response", (response) => {
     }
 })
 
+let page = new URLSearchParams(window.location.search).get("page")
 $(document).ready(function() {
+    if (page == "collection") {
+        $("#app").load("./collection.html")
+        loadScript("./scripts/collection.js")
+    } else {
+        $("#app").load("./_layout_generators.html")
+        loadScript("./scripts/common_generators.js")
+    }
+
     window.api.send("ask-user-files-path")
     $("#choose-dreamer-output-path").off('click').on("click", () => {
         window.api.send("change-user-files-path")
