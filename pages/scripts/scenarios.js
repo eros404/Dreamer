@@ -1,9 +1,11 @@
 class DeepdazeScenario {
-    constructor(text, image, epochs, iterations, saveEvery, imageWidth,
+    constructor(text, image, initImage, initImageTrain, epochs, iterations, saveEvery, imageWidth,
         deeper, openFolder, saveGIF,
         learningRate, numLayers, layerSize, batchSize) {
         this.text = text.trim()
         this.image = image
+        this.initImage = initImage
+        this.initImageTrain = initImageTrain
         this.epochs = epochs
         this.iterations = iterations
         this.saveEvery = saveEvery

@@ -3,13 +3,17 @@ let lastIt = 1000
 let currentEpoch = -1
 let lastScenarioImageDirectory
 
-window.api.receive("file-dialog-response", (filePath) => {
-    $("#dd-selected-image").attr("src", filePath)
-    $("#dd-selected-image").show()
-    $("#dd-image-cancel").show()
+window.api.receive("file-dialog-response", (result) => {
+    $(`#dd-selected-${result.sender}`).attr("src", result.file)
+    $(`#dd-selected-${result.sender}`).show()
+    $(`#dd-${result.sender}-cancel`).show()
+    if (result.sender == "init-image") {
+        $("#input-init-image-train-container").show()
+    }
 })
 window.api.receive("process-response", (data) => {
     if (data && data.output) {
+        console.log(data.output)
         var matchResult = data.output.match(/loss:\s(\-?\d+\.\d+):\s+\d+%\|.+\|\s+(\d+)\/\d+\s\[\d+:\d+<\d+:\d+,\s+(.+)]/) // deepdaze output [1]=loss [2]=current iteration [3]=iteration/seconds
         if (matchResult) {
             var currentIt = parseInt(matchResult[2])
@@ -64,21 +68,32 @@ $(".btn-cancel").hide()
 $("#process-data").hide()
 $("#dd-selected-image").hide()
 $("#cuda-warning").hide()
+// $("#input-init-image-train-container").hide()
 
 $("#dd-input-image").off('click').on("click", () => {
-    window.api.send("file-dialog")
+    window.api.send("file-dialog", "image")
 })
+// $("#dd-input-init-image").off('click').on("click", () => {
+//     window.api.send("file-dialog", "init-image")
+// })
 $("#dd-image-cancel").off('click').on("click", () => {
     $("#dd-selected-image").hide()
     $("#dd-selected-image").attr("src", "")
     $("#dd-image-cancel").hide()
 })
+// $("#dd-init-image-cancel").off('click').on("click", () => {
+//     $("#dd-selected-init-image").attr("src", "")
+//     $("#dd-init-image-cancel").hide()
+//     $("#input-init-image-train-container").hide()
+// })
 $("#dd-form").off("submit").on("submit", (e) => {
     e.preventDefault()
     $("#cuda-warning").hide()
     scenario = new DeepdazeScenario(
         $("#dd-input-text").val(),
         $("#dd-selected-image").attr("src"),
+        "",
+        $("#dd-input-init-image-train").val(),
         $("#dd-input-epochs").val(),
         $("#dd-input-iterations").val(),
         $("#dd-input-save_every").val(),
@@ -91,6 +106,9 @@ $("#dd-form").off("submit").on("submit", (e) => {
         $("#dd-input-layer-size").val(),
         $("#dd-input-batch-size").val()
     )
+    if (scenario.initImage) {
+        currentEpoch = -2
+    }
     window.api.send("exec-deepdaze", scenario)
     $('#cancel-deepdaze').show()
     $('#dd-submit').hide()

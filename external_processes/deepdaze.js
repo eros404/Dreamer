@@ -15,11 +15,14 @@ function getDeepdazeArguments(deepdazeScenario) {
         "--learning_rate=" + deepdazeScenario.learningRate,
         "--num_layers=" + deepdazeScenario.numLayers,
         "--hidden_size=" + deepdazeScenario.layerSize,
-        "--batch_size=" + deepdazeScenario.batchSize
+        "--batch_size=" + deepdazeScenario.batchSize,
     ]
     if (deepdazeScenario.image) {
         arguments.push("--img=" + deepdazeScenario.image)
-        // arguments.push("--start_image_path=" + deepdazeScenario.image)
+    }
+    if (deepdazeScenario.initImage) {
+        arguments.push("--start_image_path=" + deepdazeScenario.initImage)
+        arguments.push("--start_image_train_iters=" + deepdazeScenario.initImageTrain)
     }
     return arguments
 }

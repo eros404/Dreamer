@@ -1,5 +1,6 @@
 $("#realsr-modal").hide()
 $("#image-modal").hide()
+window.api.send("ask-output-file-tree", $("#generator_input").val())
 $("#generator_input").off("change").on("change", () => {  
     window.api.send("ask-output-file-tree", $("#generator_input").val())
 })

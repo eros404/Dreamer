@@ -36,8 +36,30 @@
 <p id="console" class="bg-gray-800 text-white min-h-1.75 w-full rounded-md shadow px-2 py-1 font-mono"></p>
 <div id="dd-form-container">
   <form id="dd-form" class="container-accent p-3">
-    <div class="sm:flex">
-      <div class="field mr-3 flex-initial">
+    <!-- <div class="sm:flex field">
+      <div class="mr-3">
+        <p><label for="dd-input-init-image">Start image</label></p>
+        <div>
+          <button id="dd-input-init-image" name="dd-input-init-image" type="button">Choose...</button>
+          <button id="dd-init-image-cancel" type="button" class="btn-cancel">&#10008;</button>
+        </div>
+      </div>
+      <div id="input-init-image-train-container" class="flex flex-auto">
+        <div>
+          <p><label for="dd-input-init-image-train">Start image train</label></p>
+          <span class="tooltip">
+            <input id="dd-input-init-image-train" name="dd-input-init-image-train" type="number" required value="50" step="5" min="10" max="1000" />
+            <span class="tooltiptext">The number of steps for the initial training on the starting image.</span>
+          </span>
+        </div>
+        <div class="justify-end flex flex-auto">
+          <img id="dd-selected-init-image" src="" class="h-20 shadow rounded-md" />
+        </div>
+      </div>
+    </div>
+    <hr> -->
+    <div class="sm:flex field">
+      <div class="mr-3 flex-initial">
         <p><label for="dd-input-text">Text</label></p>
         <span class="tooltip">
           <input id="dd-input-text" name="dd-input-text" type="text" placeholder="A Panda biking in space" required maxlength="77" class="w-60" />
@@ -127,7 +149,7 @@
             <div class="field mr-3">
               <p><label for="dd-input-layer-size">Hidden size</label></p>
               <span class="tooltip">                    
-                <input id="dd-input-layer-size" name="dd-input-layer-size" type="number" value="256" min="256" max="512" step="64" />
+                <input id="dd-input-layer-size" name="dd-input-layer-size" type="number" value="256" min="256" max="512" step="32" />
                 <span class="tooltiptext">The hidden layer size of the Siren net.</span>
               </span>
             </div>

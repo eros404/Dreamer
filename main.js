@@ -90,10 +90,10 @@ ipcMain.on("install-deepdaze", (event, args) => {
     })
 })
 
-ipcMain.on("file-dialog", (event, args) => {
+ipcMain.on("file-dialog", (event, sender) => {
     dialogHelper.selectImage().then(result => {
         if (!result.canceled) {
-            winManager.sendToMainWindow("file-dialog-response", result.filePaths[0])
+            winManager.sendToMainWindow("file-dialog-response", { file: result.filePaths[0], sender: sender })
         }
     })
 })
